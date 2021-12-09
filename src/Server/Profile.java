@@ -1,3 +1,5 @@
+package Server;
+
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.security.MessageDigest;
@@ -17,5 +19,11 @@ public class Profile {
         this.username=username;
         MessageDigest msd= MessageDigest.getInstance("SHA-256");
         this.password=new BigInteger(1,msd.digest(notCoded_Pass.getBytes(StandardCharsets.UTF_8)));
+        this.registerDate=LocalDateTime.now();
+
+    }
+
+    public String getUsername() {
+        return username;
     }
 }
