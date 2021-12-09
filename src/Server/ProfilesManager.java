@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 
 //ram based--> should upgrade to Hard Storage mode
 public class ProfilesManager {
-    private ArrayList<Profile> allProfiles;
+    private static ArrayList<Profile> allProfiles;
     private static ProfilesManager INSTANCE=null;
     private ProfilesManager(){
         allProfiles=new ArrayList<>();
@@ -18,8 +18,11 @@ public class ProfilesManager {
         return INSTANCE;
     }
 
-    protected void addProfile(Profile profile){
-        allProfiles.add(profile);
+    protected static void addProfile(Profile profile)throws IllegalArgumentException {
+        if(!checkSimilarUsername(profile.getUsername()))
+            allProfiles.add(profile);
+        else
+            throw new IllegalArgumentException("A profile with this Username Already exists");
     }
 
     protected void removeProfile(Profile profile) throws NoSuchElementException{
@@ -36,6 +39,14 @@ public class ProfilesManager {
                 return prf;
         }
         return null;
+    }
+
+    protected static boolean checkSimilarUsername(String username){
+        for (Profile prf:allProfiles) {
+            if(prf.getUsername().equals(username))
+                return true;
+        }
+        return false;
     }
 
 }
