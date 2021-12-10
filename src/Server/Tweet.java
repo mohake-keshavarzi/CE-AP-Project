@@ -57,4 +57,8 @@ public class Tweet {
     public int numOfLikes(){
         return likers.size();
     }
+
+    protected boolean didLiked(Profile profile){
+        return likers.contains(profile);
+    }
 }

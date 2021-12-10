@@ -21,9 +21,11 @@ public class Profile {
      * @param username  unique username
      * @param notCoded_Pass not encoded password to be encoded and stored
      * @throws NoSuchAlgorithmException error in encoding password
-     * @throws IllegalArgumentException not unique username
+     * @throws IllegalArgumentException at least one of input parameters is null
      */
     public Profile(String firstName,String lastName,String username,String notCoded_Pass) throws NoSuchAlgorithmException,IllegalArgumentException{
+        if(firstName==null || lastName==null || username==null || notCoded_Pass==null)
+            throw new IllegalArgumentException("At least one of Arguments is Null");
         this.firstName=firstName;
         this.lastName=lastName;
         this.username=username;
@@ -31,13 +33,7 @@ public class Profile {
         MessageDigest msd= MessageDigest.getInstance(CODING_FORMAT);
         this.password=new BigInteger(1,msd.digest(notCoded_Pass.getBytes(StandardCharsets.UTF_8)));
         this.registerDate=LocalDateTime.now();
-        try{
-            ProfilesManager.addProfile(this);
-        }
-        catch (IllegalArgumentException ex){
-            System.err.println(ex.getMessage());
-            throw ex;
-        }
+
     }
 
     public String getUsername() {
@@ -87,11 +83,15 @@ public class Profile {
      * is equal to profile's password
      * @param pass the input string to check its equality to current password
      * @return returns true if pass is equal to current password
-     * @throws NoSuchAlgorithmException if encoding of input string was not successful
+     * @throws NoSuchAlgorithmException if encoding of input password's string was not successful
      */
     protected boolean checkPassword(String pass) throws NoSuchAlgorithmException{
         MessageDigest msd= MessageDigest.getInstance(CODING_FORMAT);
-        return password.equals(new BigInteger(1, msd.digest(pass.getBytes(StandardCharsets.UTF_8))));
+        try {
+            return password.equals(new BigInteger(1, msd.digest(pass.getBytes(StandardCharsets.UTF_8))));
+        }
+        catch (Exception ex){
+            return false;}
     }
 
     /**

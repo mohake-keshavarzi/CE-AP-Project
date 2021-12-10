@@ -33,7 +33,7 @@ public class ProfilesManager {
             throw new NoSuchElementException("The profile not found to remove");
     }
     
-    protected Profile getProfileByUserName(String username){
+    protected static Profile getProfileByUserName(String username){
         for (Profile prf:allProfiles) {
             if(prf.getUsername().equals(username))
                 return prf;
