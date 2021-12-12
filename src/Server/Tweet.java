@@ -7,6 +7,7 @@ public class Tweet {
     private final String context;
     private final LocalDateTime sublimationDate;
     private final Profile sender;
+    private final Tweet reTweetedTweet;
     private HashSet<Profile> likers; // Profiles of whom have liked this post
     //private int numOfLikes=0;
 
@@ -14,17 +15,39 @@ public class Tweet {
      * makes a new Tweet
      * @param context the text of Tweet
      * @param sender profile of the sender of the Tweet
-     * @throws  IllegalArgumentException weather if context is valid
+     * @throws  IllegalArgumentException  if context has more than 256 characters
+     * @throws  NullPointerException if context is Null
      */
-    public Tweet(String context,Profile sender) throws IllegalArgumentException{
+    public Tweet(String context,Profile sender) throws IllegalArgumentException,NullPointerException{
         this.sender=sender;
         if (context==null)
-            throw new IllegalArgumentException("Context is Null");
+            throw new NullPointerException("Context is Null");
         else if(context.length()>256)
             throw new IllegalArgumentException("Tweet context should br less than 256 characters");
         likers= new HashSet<>();
         this.context=context;
         this.sublimationDate =LocalDateTime.now();
+        reTweetedTweet=null;
+    }
+
+    /**
+     * makes a new tweet which contains another tweet as retweet
+     * here if context is null is replaced with an empty string
+     * @param context the context of main tweet
+     * @param sender  profile of who is retweeting
+     * @param reTweet the Tweet that we want to be retweeted in this tweet
+     * @throws IllegalStateException if context has more than 256 characters
+     */
+    public Tweet(String context,Profile sender,Tweet reTweet) throws  IllegalArgumentException{
+        this.sender=sender;
+        if (context==null)
+            context="";
+        else if(context.length()>256)
+            throw new IllegalArgumentException("Tweet context should br less than 256 characters");
+        likers= new HashSet<>();
+        this.context=context;
+        this.sublimationDate =LocalDateTime.now();
+        reTweetedTweet=reTweet;
     }
 
     /**
