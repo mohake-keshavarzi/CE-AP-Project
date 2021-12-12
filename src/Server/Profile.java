@@ -15,7 +15,7 @@ public class Profile {
     final private String CODING_FORMAT="SHA-256";
 
     /**
-     * makes the profile and checks not duplicated username and encodes password
+     * makes the profile and encodes the password
      * @param firstName firstName
      * @param lastName  lastName
      * @param username  unique username
