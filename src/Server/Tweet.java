@@ -8,6 +8,7 @@ public class Tweet {
     private final LocalDateTime sublimationDate;
     private final Profile sender;
     private final Tweet reTweetedTweet;
+    //private final Tweet parentTweet;
     private HashSet<Profile> likers; // Profiles of whom have liked this post
     //private int numOfLikes=0;
 
@@ -28,6 +29,7 @@ public class Tweet {
         this.context=context;
         this.sublimationDate =LocalDateTime.now();
         reTweetedTweet=null;
+        //this.parentTweet=parentTweet;
     }
 
     /**
@@ -48,7 +50,9 @@ public class Tweet {
         this.context=context;
         this.sublimationDate =LocalDateTime.now();
         reTweetedTweet=reTweet;
+        //this.parentTweet=parentTweet;
     }
+
 
     /**
      * adds given profile to the list of whom have liked this Tweet
