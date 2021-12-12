@@ -10,6 +10,12 @@ public class TweetingService {
 
     private TweetingService(){allTweets= new ArrayList<>();}
 
+    /**
+     * Implants singleton for this class.
+     * if an instance from this class had been created, returns that
+     * else creates a new instance and returns that
+     * @return returns the previously created or newly created instance.
+     */
     protected static TweetingService getInstance(){
         if(INSTANCE==null) {
             INSTANCE=new TweetingService();
@@ -17,13 +23,29 @@ public class TweetingService {
         return INSTANCE;
     }
 
-    protected Tweet publishTweet(Profile sender,String context){
+    /**
+     * makes a new tweet and adds it to the list of tweets.
+     * @param sender profile of who wants to send
+     * @param context context of tweet
+     * @return returns the created tweet
+     * @throws IllegalArgumentException if tweet length is not valid
+     * @throws NullPointerException if context is null
+     */
+    protected Tweet publishTweet(Profile sender,String context)throws IllegalArgumentException,NullPointerException{
         Tweet tweet=new Tweet(context,sender);
         allTweets.add(tweet);
         return tweet;
     }
 
-    protected Tweet reTweet(Profile sender,String context,Tweet reTweet){
+    /**
+     * makes a new tweet with a reTweet from previously published tweets (in this case context could be null)
+     * @param sender profile of who wants to send a tweet
+     * @param context context of tweet
+     * @param reTweet the tweet that is going to be retweeted in this tweet
+     * @return returns the created tweet
+     * @throws IllegalArgumentException if tweet length is not valid
+     */
+    protected Tweet reTweet(Profile sender,String context,Tweet reTweet) throws IllegalArgumentException{
         if(!allTweets.contains(reTweet))
             throw new IllegalArgumentException("No such a tweet found to be retweeted");
         Tweet tweet=new Tweet(context,sender,reTweet);
@@ -31,15 +53,13 @@ public class TweetingService {
         return tweet;
     }
 
-    protected Tweet reply(Profile sender,String context){
-        Tweet tweet=new Tweet(context,sender);
-        allTweets.add(tweet);
-        return tweet;
-    }
 
-
-
-
+    /**
+     * checks weather the given tweet exists if true removes it from list
+     * otherwise throws exception
+     * @param tweet the tweet that should ce deleted
+     * @throws NoSuchElementException if given tweet not exists
+     */
     protected void deleteTweet(Tweet tweet) throws NoSuchElementException {
         if(allTweets.contains(tweet)){
             allTweets.remove(tweet);
@@ -48,6 +68,12 @@ public class TweetingService {
             throw new NoSuchElementException("There isn't such a tweet");
     }
 
+    /**
+     * likes a previously created tweet if it hadn't been liked by the profile
+     * @param profile profile of who wants to like
+     * @param tweet the tweet to be liked
+     * @throws NoSuchElementException if given tweet not exists
+     */
     protected void likeTweet(Profile profile ,Tweet tweet ) throws NoSuchElementException{
         if(!allTweets.contains(tweet))
             throw new NoSuchElementException("There isn't such a tweet");
@@ -56,6 +82,12 @@ public class TweetingService {
         }
     }
 
+    /**
+     * unlikes a previously created tweet if had been liked by the profile
+     * @param profile profile of who wants to unlike
+     * @param tweet the tweet to be unliked
+     * @throws NoSuchElementException if given tweet not exists
+     */
     protected void unLikeTweet(Profile profile,Tweet tweet) throws  NoSuchElementException{
         if(!allTweets.contains(tweet))
             throw new NoSuchElementException("There isn't such a tweet");
