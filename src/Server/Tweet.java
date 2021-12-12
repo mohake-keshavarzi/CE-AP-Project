@@ -7,7 +7,7 @@ public class Tweet {
     private final String context;
     private final LocalDateTime sublimationDate;
     private final Profile sender;
-    private HashSet<Profile> likers;
+    private HashSet<Profile> likers; // Profiles of whom have liked this post
     //private int numOfLikes=0;
 
     /**
@@ -28,7 +28,7 @@ public class Tweet {
     }
 
     /**
-     * adds given profile to the list of whom had liked this Tweet
+     * adds given profile to the list of whom have liked this Tweet
      * @param profile profile of whom wants to like
      * @throws  IllegalArgumentException If the profile had liked this Tweet before
      */
@@ -42,7 +42,7 @@ public class Tweet {
     }
 
     /**
-     * if profile had liked this Tweet removes the profile from list of whom had liked this Tweet
+     * if profile have liked this Tweet removes the profile from list of whom had liked this Tweet
      * @param profile the profile of whom wants to remove his like on this Tweet
      * @throws IllegalStateException if this profile hadn't liked this Tweet
      */
