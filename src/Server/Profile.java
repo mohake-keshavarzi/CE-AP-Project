@@ -5,6 +5,10 @@ import java.time.LocalDateTime;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.NoSuchElementException;
+
 public class Profile {
     private String firstName;
     private String lastName;
@@ -13,6 +17,9 @@ public class Profile {
     final private LocalDateTime registerDate;
     private BigInteger password;
     final private String CODING_FORMAT="SHA-256";
+    private final HashSet<Profile> followers;
+    private final HashSet<Profile> followings;
+
 
     /**
      * makes the profile and encodes the password
@@ -34,6 +41,8 @@ public class Profile {
         this.password=new BigInteger(1,msd.digest(notCoded_Pass.getBytes(StandardCharsets.UTF_8)));
         this.registerDate=LocalDateTime.now();
 
+        followers=new HashSet<>();
+        followings=new HashSet<>();
     }
 
     public String getUsername() {
@@ -105,5 +114,43 @@ public class Profile {
             MessageDigest msd= MessageDigest.getInstance(CODING_FORMAT);
             this.password=new BigInteger(1,msd.digest(newPass.getBytes(StandardCharsets.UTF_8)));
         }
+    }
+
+    /**
+     * add profile to the set of followers
+     * @param prf profile to be added
+     */
+    protected void addFollower(Profile prf){
+        followers.add(prf);
+    }
+
+    /**
+     * remove given profile from set of followers
+     * @param prf profile to be removed
+     * @throws NoSuchElementException if there isn't such a profile in the set of followers
+     */
+    protected void removeFollower(Profile prf) throws NoSuchElementException{
+        if(!followers.contains(prf))
+            throw new NoSuchElementException("Profile is not in the followers list to remove");
+        followers.remove(prf);
+    }
+
+    /**
+     * add the profile to the set of followings
+     * @param prf the profile to be added
+     */
+    protected void addFollowing(Profile prf){
+        followings.add(prf);
+    }
+
+    /**
+     * remove the given profile from the set of followings
+     * @param prf the profile to be removed
+     * @throws NoSuchElementException if given profile not found in the set of followings
+     */
+    protected void removeFollowing(Profile prf) throws NoSuchElementException{
+        if(!followings.contains(prf))
+            throw new NoSuchElementException("Profile is not in the followings list to remove");
+        followings.remove(prf);
     }
 }
