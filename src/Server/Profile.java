@@ -158,7 +158,7 @@ public class Profile {
      * returns the Followings list in the format of ArrayList
      * @return the ArrayList of followings
      */
-    protected ArrayList<Profile> listOfFollowings(){
+    protected ArrayList<Profile> getListOfFollowings(){
         return new ArrayList<>(followings);
     }
 }
