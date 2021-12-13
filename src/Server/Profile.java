@@ -153,4 +153,12 @@ public class Profile {
             throw new NoSuchElementException("Profile is not in the followings list to remove");
         followings.remove(prf);
     }
+
+    /**
+     * returns the Followings list in the format of ArrayList
+     * @return the ArrayList of followings
+     */
+    protected ArrayList<Profile> listOfFollowings(){
+        return new ArrayList<>(followings);
+    }
 }
