@@ -28,7 +28,7 @@ public class ProfilesManager {
      * @param profile The given profile
      * @throws IllegalArgumentException when already there is another profile with same username.
      */
-    protected static void addProfile(Profile profile)throws IllegalArgumentException {
+    protected  void addProfile(Profile profile)throws IllegalArgumentException {
         if(!checkSimilarUsername(profile.getUsername()))
             allProfiles.add(profile);
         else
@@ -53,7 +53,7 @@ public class ProfilesManager {
      * @param username username of desired profile
      * @return the profile with the same username
      */
-    protected static Profile getProfileByUserName(String username){
+    protected Profile getProfileByUserName(String username){
         for (Profile prf:allProfiles) {
             if(prf.getUsername().equals(username))
                 return prf;
@@ -66,12 +66,21 @@ public class ProfilesManager {
      * @param username username that we want to check
      * @return the profile which has this username
      */
-    protected static boolean checkSimilarUsername(String username){
+    protected boolean checkSimilarUsername(String username){
         for (Profile prf:allProfiles) {
             if(prf.getUsername().equals(username))
                 return true;
         }
         return false;
+    }
+
+    /**
+     * checks weather given profiles exists in the list of profiles
+     * @param prf the profile to be checked
+     * @return true if profile exists
+     */
+    protected boolean profileExists(Profile prf){
+        return allProfiles.contains(prf);
     }
 
 }
