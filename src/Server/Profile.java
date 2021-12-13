@@ -161,4 +161,8 @@ public class Profile {
     protected ArrayList<Profile> getListOfFollowings(){
         return new ArrayList<>(followings);
     }
+
+    protected ArrayList<Profile> getListOfFollowers(){
+        return new ArrayList<>(followers);
+    }
 }

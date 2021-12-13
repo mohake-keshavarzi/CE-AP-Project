@@ -88,4 +88,8 @@ public class Tweet {
     protected boolean didLiked(Profile profile){
         return likers.contains(profile);
     }
+
+    public Profile getSender() {
+        return sender;
+    }
 }

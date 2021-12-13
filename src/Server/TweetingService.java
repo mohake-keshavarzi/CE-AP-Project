@@ -97,4 +97,14 @@ public class TweetingService {
     }
 
 
+    protected ArrayList<Tweet> getAllTweetsOfProfile(Profile prf){
+            ArrayList<Tweet> tweets=new ArrayList<>();
+        for (Tweet tweet:allTweets) {
+            if(tweet.getSender()==prf)
+                tweets.add(tweet);
+        }
+        return tweets;
+    }
+
+
 }
