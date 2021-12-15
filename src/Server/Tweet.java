@@ -92,4 +92,8 @@ public class Tweet {
     public Profile getSender() {
         return sender;
     }
+
+    public Tweet getReTweetedTweet() {
+        return reTweetedTweet;
+    }
 }
