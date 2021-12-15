@@ -23,6 +23,11 @@ public class TimeLineService {
         return INSTANCE;
     }
 
+    /**
+     * returns whole published tweets of given profile's followings(It contains retweets)
+     * @param profile the given profile
+     * @return whole published tweets of given profile's followings(It contains retweets)
+     */
     private ArrayList<Tweet> returnAllFollowingsTweets(Profile profile){
         ArrayList<Tweet> tweets=new ArrayList<>();
         for (Profile prf:profile.getListOfFollowings()) {
@@ -31,6 +36,11 @@ public class TimeLineService {
         return tweets;
     }
 
+    /**
+     * returns whole tweets which given profile's followings has liked
+     * @param profile the given profile
+     * @return returns whole tweets which given profile's followings has liked
+     */
     private ArrayList<Tweet> returnAllFollowingsLikes(Profile profile){
         ArrayList<Tweet> tweets=new ArrayList<>();
         for (Profile prf:profile.getListOfFollowings()) {
@@ -39,11 +49,17 @@ public class TimeLineService {
         return tweets;
     }
 
+    /**
+     * returns whole published tweets of given profile's followings(It contains retweets) also
+     * whole tweets which given profile's followings has liked in order of submission date
+     * @param profile given profile
+     * @return believe me. it returns all of them!!!!!!!!!!
+     */
     protected ArrayList<Tweet> returnTimeline(Profile profile){
         ArrayList<Tweet> tweets=new ArrayList<>();
         tweets.addAll(returnAllFollowingsLikes(profile));
         tweets.addAll(returnAllFollowingsTweets(profile));
-        tweets.sort(Comparator.comparing(Tweet::getSubmissionDate));
+        tweets.sort(Comparator.comparing(Tweet::getSubmissionDate)); //https://stackoverflow.com/questions/2784514/sort-arraylist-of-custom-objects-by-property
         return tweets;
     }
 }
