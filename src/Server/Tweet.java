@@ -5,7 +5,7 @@ import java.util.HashSet;
 
 public class Tweet {
     private final String context;
-    private final LocalDateTime sublimationDate;
+    private final LocalDateTime submissionDate;
     private final Profile sender;
     private final Tweet reTweetedTweet;
     //private final Tweet parentTweet;
@@ -27,7 +27,7 @@ public class Tweet {
             throw new IllegalArgumentException("Tweet context should br less than 256 characters");
         likers= new HashSet<>();
         this.context=context;
-        this.sublimationDate =LocalDateTime.now();
+        this.submissionDate =LocalDateTime.now();
         reTweetedTweet=null;
         //this.parentTweet=parentTweet;
     }
@@ -48,7 +48,7 @@ public class Tweet {
             throw new IllegalArgumentException("Tweet context should br less than 256 characters");
         likers= new HashSet<>();
         this.context=context;
-        this.sublimationDate =LocalDateTime.now();
+        this.submissionDate =LocalDateTime.now();
         reTweetedTweet=reTweet;
         //this.parentTweet=parentTweet;
     }
@@ -95,5 +95,9 @@ public class Tweet {
 
     public Tweet getReTweetedTweet() {
         return reTweetedTweet;
+    }
+
+    public LocalDateTime getSubmissionDate() {
+        return submissionDate;
     }
 }
