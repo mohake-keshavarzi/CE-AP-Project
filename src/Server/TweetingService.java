@@ -96,11 +96,29 @@ public class TweetingService {
         }
     }
 
-
+    /**
+     * returns All published tweets of the given profile it also contains the retweets
+     * @param prf given profile
+     * @return all published tweets
+     */
     protected ArrayList<Tweet> getAllTweetsOfProfile(Profile prf){
             ArrayList<Tweet> tweets=new ArrayList<>();
         for (Tweet tweet:allTweets) {
             if(tweet.getSender()==prf)
+                tweets.add(tweet);
+        }
+        return tweets;
+    }
+
+    /**
+     * returns all tweets that given profile has liked
+     * @param prf given profile
+     * @return all tweets that given profile has liked
+     */
+    protected ArrayList<Tweet> getAllLikesOfProfile(Profile prf){
+        ArrayList<Tweet> tweets=new ArrayList<>();
+        for (Tweet tweet:allTweets) {
+            if(tweet.didLiked(prf))
                 tweets.add(tweet);
         }
         return tweets;
