@@ -11,12 +11,21 @@ public class ClientHandler implements Runnable{
     private String clientId;
     private boolean stopFlag=false;
 
+    /**
+     * makes a new client handler
+     * @param connectionSocket the socket which client will communicate with
+     * @param id the id of this client
+     */
     public ClientHandler(Socket connectionSocket, String id) {
         this.connectionSocket = connectionSocket;
         this.clientId=id;
         System.out.println("New client. id="+this.clientId);
     }
 
+    /**
+     * As each client should run in a seperated thread we should implement Runnable and override run function
+     * Here we get input and output stream then we will send and receive data in the appropriate way
+     */
     @Override
     public void run(){
         String response;
@@ -46,7 +55,7 @@ public class ClientHandler implements Runnable{
             try {
                 connectionSocket.close();
             }catch (IOException ex){
-                System.err.println(ex);
+                System.err.println("Error in closing connection socket "+ ex);
             }
                 NetworkService.getInstance().removeClient(this);
         }

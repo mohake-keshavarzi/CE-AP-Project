@@ -14,6 +14,11 @@ public abstract class Network {
     private static InputStream in;
     private static int timeOut;
 
+    /**
+     * gets the ip and port of welcoming socket of the server and trys to connect to it
+     * @param IP ip of server's welcoming socket
+     * @param port port of server's welcoming socket
+     */
     protected static void connectToServer(String IP,int port){
         try{
             socket=new Socket(IP,port);
@@ -28,6 +33,11 @@ public abstract class Network {
 
     }
 
+    /**
+     * sends the given string to the server
+     * @param input given message as a String
+     * @throws IllegalStateException if there is no connection to the server
+     */
     protected static void sendToServer(String input) throws IllegalStateException{
         if(socket.isConnected()) {
             try {
@@ -40,6 +50,11 @@ public abstract class Network {
             throw new IllegalStateException("Socket is not connected");
     }
 
+    /**
+     * waits until to receive a message from server
+     * @return returns the message as a String
+     * @throws IllegalStateException if there is no connection
+     */
     protected static String receiveFromServer() throws IllegalStateException{
         byte[] buffer = new byte[2048];
         if(socket.isConnected()) {
@@ -56,12 +71,20 @@ public abstract class Network {
 
     }
 
-    protected static void closeConnection(){
-        try {
-            socket.close();
-        }catch (IOException ex){
-            System.err.println("Something went wrong while closing connection "+ ex);
+    /**
+     * closes the socket
+     * @throws IllegalStateException if there is no socket
+     */
+    protected static void closeConnection() throws IllegalStateException{
+        if(socket!=null) {
+            try {
+                socket.close();
+            } catch (IOException ex) {
+                System.err.println("Something went wrong while closing connection " + ex);
+            }
         }
+        else
+            throw new IllegalStateException("No socket exists");
     }
 
 

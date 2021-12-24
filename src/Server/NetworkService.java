@@ -30,6 +30,10 @@ public class NetworkService {
         return INSTANCE;
     }
 
+    /**
+     * if there is no welcoming socket ,Creates one on the given port number
+     * @param welcomePortNum number of the port that we want open socket on it
+     */
     protected void init(int welcomePortNum) {
         if (welcomeSocket == null) {
             try {
@@ -46,6 +50,11 @@ public class NetworkService {
         }
     }
 
+    /**
+     * if there is a welcoming socket
+     * waits for a new client and accept its connection
+     * after that creates a new socket and new ClientHandler and runs it in a thread pool
+     */
     protected void acceptNewClient(){
         try {
             Socket connectionSocket = welcomeSocket.accept();
@@ -58,6 +67,9 @@ public class NetworkService {
         }
     }
 
+    /**
+     * closes the welcoming socket and will not accept any more client
+     */
     protected void closeWelcomeSocket(){
         if(welcomeSocket!=null){
             try {
@@ -70,9 +82,19 @@ public class NetworkService {
             }
         }
     }
+
+    /**
+     * returns number of stored clients in the client handler arraylist
+     * @return number of stored clients
+     */
     protected int getNumberOfClients(){
         return clientHandlers.size();
     }
+
+    /**
+     * removes given client handler from the arraylist
+     * @param clientHandler given client handler to be removed from arraylist
+     */
     protected void removeClient(ClientHandler clientHandler){
         clientHandlers.remove(clientHandler);
     }
