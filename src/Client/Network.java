@@ -14,7 +14,7 @@ public abstract class Network {
     private static InputStream in;
     private static int timeOut;
 
-    protected void connectToServer(String IP,int port){
+    protected static void connectToServer(String IP,int port){
         try{
             socket=new Socket(IP,port);
             System.out.println("Connected to the server");
@@ -24,7 +24,7 @@ public abstract class Network {
         }
     }
 
-    protected void sendToServer(String input) throws IllegalStateException{
+    protected static void sendToServer(String input) throws IllegalStateException{
         if(socket.isConnected()) {
             try {
                 out.write(input.getBytes());
@@ -36,7 +36,7 @@ public abstract class Network {
             throw new IllegalStateException("Socket is not connected");
     }
 
-    protected String receiveFromServer() throws IllegalStateException{
+    protected static String receiveFromServer() throws IllegalStateException{
         byte[] buffer = new byte[2048];
         if(socket.isConnected()) {
             try {
@@ -50,6 +50,14 @@ public abstract class Network {
         else
             throw new IllegalStateException("Socket is not connected");
 
+    }
+
+    protected static void closeConnection(){
+        try {
+            socket.close();
+        }catch (IOException ex){
+            System.err.println("Something went wrong while closing connection "+ ex);
+        }
     }
 
 
