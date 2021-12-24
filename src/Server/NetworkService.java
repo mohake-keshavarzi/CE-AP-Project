@@ -31,14 +31,14 @@ public class NetworkService {
     }
 
     protected void init(int welcomePortNum) {
-        if (welcomeSocket != null) {
+        if (welcomeSocket == null) {
             try {
                 welcomeSocket = new ServerSocket(welcomePortNum);
                 pool= Executors.newCachedThreadPool();
                 System.out.println("Welcome Socket opened on port " + welcomePortNum);
                 System.out.println("Waiting for clients...");
             } catch (IOException ex) {
-                System.err.println(ex);
+                System.err.println("We have problem on making Welcome port: "+ex);
             }
         }
         else {
@@ -54,7 +54,7 @@ public class NetworkService {
             System.out.println("New Client accepted. Num of clients:"+clientHandlers.size());
         }
         catch (IOException ex){
-            System.err.println(ex);
+            System.err.println("Error in accepting new client "+ex);
         }
     }
 
@@ -66,7 +66,7 @@ public class NetworkService {
                 System.out.println("Welcoming Socket closed. No more client will be accepted");
             }
             catch (IOException ex){
-                System.err.println(ex);
+                System.err.println("Error in closing welcoming socket "+ex);
             }
         }
     }

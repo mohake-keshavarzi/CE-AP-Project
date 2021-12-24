@@ -17,11 +17,15 @@ public abstract class Network {
     protected static void connectToServer(String IP,int port){
         try{
             socket=new Socket(IP,port);
+            out=socket.getOutputStream();
+            in=socket.getInputStream();
             System.out.println("Connected to the server");
+
         }
         catch (IOException ex){
             System.err.println("Problem in connection: "+ex);
         }
+
     }
 
     protected static void sendToServer(String input) throws IllegalStateException{
