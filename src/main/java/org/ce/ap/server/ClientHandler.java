@@ -1,5 +1,7 @@
 package main.java.org.ce.ap.server;
 
+import main.java.org.ce.ap.server.impl.NetworkServiceImpl;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
@@ -57,7 +59,7 @@ public class ClientHandler implements Runnable{
             }catch (IOException ex){
                 System.err.println("Error in closing connection socket "+ ex);
             }
-                NetworkService.getInstance().removeClient(this);
+                NetworkServiceImpl.getInstance().removeClient(this);
         }
 
     }

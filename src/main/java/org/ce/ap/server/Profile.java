@@ -55,7 +55,7 @@ public class Profile {
      * @param bio a text to be set as bio for profile
      * @throws IllegalArgumentException if input string is larger than 256 characters
      */
-    protected void setBio(String bio) throws IllegalArgumentException{
+    public void setBio(String bio) throws IllegalArgumentException{
         if(bio==null) this.bio="";
         else if(bio.length()<=256)
             this.bio = bio;
@@ -71,7 +71,7 @@ public class Profile {
         return firstName;
     }
 
-    protected void setFirstName(String firstName) {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
@@ -79,7 +79,7 @@ public class Profile {
         return lastName;
     }
 
-    protected void setLastName(String lastName) {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
@@ -94,7 +94,7 @@ public class Profile {
      * @return returns true if pass is equal to current password
      * @throws NoSuchAlgorithmException if encoding of input password's string was not successful
      */
-    protected boolean checkPassword(String pass) throws NoSuchAlgorithmException{
+    public boolean checkPassword(String pass) throws NoSuchAlgorithmException{
         MessageDigest msd= MessageDigest.getInstance(CODING_FORMAT);
         try {
             return password.equals(new BigInteger(1, msd.digest(pass.getBytes(StandardCharsets.UTF_8))));
@@ -109,7 +109,7 @@ public class Profile {
      * @param newPass new password to be set instead of current password
      * @throws NoSuchAlgorithmException error in encoding password
      */
-    protected void changePassword(String currentPass,String newPass) throws NoSuchAlgorithmException{
+    public void changePassword(String currentPass,String newPass) throws NoSuchAlgorithmException{
         if(checkPassword(currentPass)){
             MessageDigest msd= MessageDigest.getInstance(CODING_FORMAT);
             this.password=new BigInteger(1,msd.digest(newPass.getBytes(StandardCharsets.UTF_8)));
@@ -120,7 +120,7 @@ public class Profile {
      * add profile to the set of followers
      * @param prf profile to be added
      */
-    protected void addFollower(Profile prf){
+    public void addFollower(Profile prf){
         followers.add(prf);
     }
 
@@ -129,7 +129,7 @@ public class Profile {
      * @param prf profile to be removed
      * @throws NoSuchElementException if there isn't such a profile in the set of followers
      */
-    protected void removeFollower(Profile prf) throws NoSuchElementException{
+    public void removeFollower(Profile prf) throws NoSuchElementException{
         if(!followers.contains(prf))
             throw new NoSuchElementException("Profile is not in the followers list to remove");
         followers.remove(prf);
@@ -139,7 +139,7 @@ public class Profile {
      * add the profile to the set of followings
      * @param prf the profile to be added
      */
-    protected void addFollowing(Profile prf){
+    public void addFollowing(Profile prf){
         followings.add(prf);
     }
 
@@ -148,7 +148,7 @@ public class Profile {
      * @param prf the profile to be removed
      * @throws NoSuchElementException if given profile not found in the set of followings
      */
-    protected void removeFollowing(Profile prf) throws NoSuchElementException{
+    public void removeFollowing(Profile prf) throws NoSuchElementException{
         if(!followings.contains(prf))
             throw new NoSuchElementException("Profile is not in the followings list to remove");
         followings.remove(prf);
@@ -158,11 +158,11 @@ public class Profile {
      * returns the Followings list in the format of ArrayList
      * @return the ArrayList of followings
      */
-    protected ArrayList<Profile> getListOfFollowings(){
+    public ArrayList<Profile> getListOfFollowings(){
         return new ArrayList<>(followings);
     }
 
-    protected ArrayList<Profile> getListOfFollowers(){
+    public ArrayList<Profile> getListOfFollowers(){
         return new ArrayList<>(followers);
     }
 }
