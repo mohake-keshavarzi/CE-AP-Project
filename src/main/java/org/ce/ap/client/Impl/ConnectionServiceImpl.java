@@ -1,25 +1,38 @@
-package main.java.org.ce.ap.client;
+package main.java.org.ce.ap.client.Impl;
+
+import main.java.org.ce.ap.client.ConnectionService;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 
-
-public abstract class Network {
+public  class ConnectionServiceImpl implements ConnectionService {
     private static String serverIP;
     private static int serverPort;
     private static Socket socket;
     private static OutputStream out;
     private static InputStream in;
     private static int timeOut;
+    static private ConnectionServiceImpl INSTANCE;
+
+    private ConnectionServiceImpl(){
+
+    }
 
     /**
-     * gets the ip and port of welcoming socket of the server and trys to connect to it
-     * @param IP ip of server's welcoming socket
-     * @param port port of server's welcoming socket
+     * for implanting  the singleton design.
+     * if an instance of this class have been made returns that else makes a new one and returns that
+     * @return current instance or newly created instance of this class
      */
-    protected static void connectToServer(String IP,int port){
+
+     public static ConnectionServiceImpl getInstance(){
+        if(INSTANCE==null) {
+            INSTANCE = new ConnectionServiceImpl();
+        }
+        return INSTANCE;
+    }
+    public void connectToServer(String IP,int port){
         try{
             socket=new Socket(IP,port);
             out=socket.getOutputStream();
@@ -38,7 +51,7 @@ public abstract class Network {
      * @param input given message as a String
      * @throws IllegalStateException if there is no connection to the server
      */
-    protected static void sendToServer(String input) throws IllegalStateException{
+    public void sendToServer(String input) throws IllegalStateException{
         if(socket.isConnected()) {
             try {
                 out.write(input.getBytes());
@@ -55,7 +68,7 @@ public abstract class Network {
      * @return returns the message as a String
      * @throws IllegalStateException if there is no connection
      */
-    protected static String receiveFromServer() throws IllegalStateException{
+    public String receiveFromServer() throws IllegalStateException{
         byte[] buffer = new byte[2048];
         if(socket.isConnected()) {
             try {
@@ -75,7 +88,7 @@ public abstract class Network {
      * closes the socket
      * @throws IllegalStateException if there is no socket
      */
-    protected static void closeConnection() throws IllegalStateException{
+    public void closeConnection() throws IllegalStateException{
         if(socket!=null) {
             try {
                 socket.close();
