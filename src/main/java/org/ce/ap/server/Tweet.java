@@ -100,4 +100,8 @@ public class Tweet {
     public LocalDateTime getSubmissionDate() {
         return submissionDate;
     }
+
+    public String getContext() {
+        return context;
+    }
 }
