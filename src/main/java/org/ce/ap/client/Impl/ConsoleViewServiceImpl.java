@@ -27,10 +27,10 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
     }
 
     @Override
-    public void printNormal(String input){
+    public void printNormal(String input,char ending){
         try {
             if(input!=null)
-                System.out.println(ConsoleColors.WHITE_BRIGHT+ input+ConsoleColors.RESET);
+                System.out.print(ConsoleColors.WHITE_BRIGHT+ input+ending+ConsoleColors.RESET);
             else {
                 throw new NullPointerException("Null input to show Normal text");
             }
@@ -39,8 +39,12 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
         }
 
     }
+    public void printNormal(String input){
+        printNormal(input,'\n');
+    }
 
-    @Override
+
+        @Override
     public void printHeading(String input) {
         try {
             if (input != null)

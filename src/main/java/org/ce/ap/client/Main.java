@@ -1,5 +1,6 @@
 package main.java.org.ce.ap.client;
 
+import main.java.org.ce.ap.client.Impl.CommandParserServiceImpl;
 import main.java.org.ce.ap.client.Impl.ConnectionServiceImpl;
 import main.java.org.ce.ap.client.Impl.ConsoleViewServiceImpl;
 import main.java.org.ce.ap.server.Profile;
@@ -38,5 +39,10 @@ public class Main {
             console.printError(e.toString());
         }
 
+        CommandParserServiceImpl commander=CommandParserServiceImpl.getInstance();
+        commander.runAuthenticationInterface();
+
     }
+
+
 }

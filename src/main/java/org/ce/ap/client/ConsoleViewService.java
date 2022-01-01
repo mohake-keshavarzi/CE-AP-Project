@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 public interface ConsoleViewService {
 
     void printNormal(String input);
+    void printNormal(String input,char ending);
+
 
     void printHeading(String input);
 
