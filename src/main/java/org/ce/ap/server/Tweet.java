@@ -4,12 +4,14 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 
 public class Tweet {
-    private final String context;
+    private  String context;
+    private boolean isDeleted=false;
     private final LocalDateTime submissionDate;
     private final Profile sender;
     private final Tweet reTweetedTweet;
     //private final Tweet parentTweet;
     private HashSet<Profile> likers; // Profiles of whom have liked this post
+    private HashSet<Tweet> tweetsWhomHaveRetweetedThisTweet;
     //private int numOfLikes=0;
 
     /**
@@ -21,6 +23,8 @@ public class Tweet {
      */
     public Tweet(String context,Profile sender) throws IllegalArgumentException,NullPointerException{
         this.sender=sender;
+        tweetsWhomHaveRetweetedThisTweet=new HashSet<>();
+
         if (context==null)
             throw new NullPointerException("Context is Null");
         else if(context.length()>256)
@@ -42,6 +46,8 @@ public class Tweet {
      */
     public Tweet(String context,Profile sender,Tweet reTweet) throws  IllegalArgumentException{
         this.sender=sender;
+        tweetsWhomHaveRetweetedThisTweet=new HashSet<>();
+        reTweet.addRetweeter(this);
         if (context==null)
             context="";
         else if(context.length()>256)
@@ -103,5 +109,22 @@ public class Tweet {
 
     public String getContext() {
         return context;
+    }
+
+    public void addRetweeter(Tweet tweet){
+        tweetsWhomHaveRetweetedThisTweet.add(tweet);
+    }
+    public int numOfRetweeters(){
+        return tweetsWhomHaveRetweetedThisTweet.size();
+
+    }
+
+    public void deleteThisTweet(){
+        context=null;
+        isDeleted=true;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
     }
 }

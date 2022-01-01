@@ -27,12 +27,15 @@ public class Main {
         Profile sender;
         try {
             sender = new Profile("Ahmad", "Rezai", "AR", "sss");
-        Tweet t=new Tweet("dgfddgdgdgd gdfgdgfd dgdfgdf dfgffdgfg dfgdfd dg fddgfdgfd dfgdgfd fgdgfgdhfg dfgdgfdgfdf fgdgdrdgf g12534 lkhkjg drwfdsd gtghjghkh ytdfdsd sddfgsfdgfd fhbgfhghfy yjgyjkuu khghjfg szdasdawed erdfsd sfesdf sdfdsefaefdsgf 123456789 fddgdf qewry uyjhgjur sdvf",sender);
-        Tweet tt=new Tweet("Hey retweet",sender,t);
-        console.printTweet(t,0,0);
-        console.printTweet(tt,0,0);
+            Tweet t=new Tweet("dgfddgdgdgd gdfgdgfd dgdfgdf dfgffdgfg dfgdfd dg fddgfdgfd dfgdgfd fgdgfgdhfg dfgdgfdgfdf fgdgdrdgf g12534 lkhkjg drwfdsd gtghjghkh ytdfdsd sddfgsfdgfd fhbgfhghfy yjgyjkuu khghjfg szdasdawed erdfsd sfesdf sdfdsefaefdsgf 123456789 fddgdf qewry uyjhgjur sdvf",sender);
+            Tweet tt=new Tweet("Hey retweet",sender,t);
+            console.printTweet(t);
 
-        }catch (Exception e){}
+            console.printTweet(tt);
+
+        }catch (Exception e){
+            console.printError(e.toString());
+        }
 
     }
 }

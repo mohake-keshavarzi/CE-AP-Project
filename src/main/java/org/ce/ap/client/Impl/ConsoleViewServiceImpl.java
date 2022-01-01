@@ -28,30 +28,47 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
 
     @Override
     public void printNormal(String input){
-        if(input!=null)
-            System.out.println(ConsoleColors.WHITE_BRIGHT+ input+ConsoleColors.RESET);
-        else
-            printError("Null input to show Normal text");
+        try {
+            if(input!=null)
+                System.out.println(ConsoleColors.WHITE_BRIGHT+ input+ConsoleColors.RESET);
+            else {
+                throw new NullPointerException("Null input to show Normal text");
+            }
+        }catch (NullPointerException ex){
+            printError(ex.toString());
+        }
+
     }
 
     @Override
-    public void printHeading(String input){
-        if(input!=null)
-            System.out.println(ConsoleColors.WHITE_UNDERLINED+ConsoleColors.WHITE_BOLD_BRIGHT+ input+ConsoleColors.RESET);
-        else
-            printError("Null input to show Normal text");
+    public void printHeading(String input) {
+        try {
+            if (input != null)
+                System.out.println(ConsoleColors.WHITE_UNDERLINED + ConsoleColors.WHITE_BOLD_BRIGHT + input + ConsoleColors.RESET);
+            else {
+                throw new NullPointerException("Null input to show Normal text");
+            }
+        }catch (NullPointerException ex){
+            printError(ex.toString());
+        }
     }
 
-    @Override
-    public void printError(String input){
-        if(input!=null)
-            System.out.println(ConsoleColors.RED+ConsoleColors.RED_UNDERLINED+ input+ConsoleColors.RESET);
-        else
-            printError("Null input to show Error");
-    }
 
     @Override
-    public void printTweet(Tweet tweet,int likes, int retweets)
+    public void printError(String input) {
+        try {
+
+            if (input != null)
+                System.out.println(ConsoleColors.RED + ConsoleColors.RED_UNDERLINED + input + ConsoleColors.RESET);
+            else {
+                throw new NullPointerException("Null input to show Normal text");
+            }
+        }catch (NullPointerException ex){
+            printError(ex.toString());
+        }
+    }
+    @Override
+    public void printTweet(Tweet tweet)
     {
         if(tweet==null){
             try {
@@ -115,33 +132,45 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
             System.out.println("║  ");
 
 
-            strBuffer.append(retweet.getContext());
-            while (!strBuffer.isEmpty()) {
-                if(strBuffer.length()>CONTEXT_LINE_LENGTH) {
-                    System.out.print(ConsoleColors.RESET);
-                    System.out.print(ConsoleColors.GREEN);
-                    System.out.print("║  ");
-                    System.out.print(ConsoleColors.RESET);
-                    System.out.print(ConsoleColors.PURPLE);
-                    System.out.print("║  ");
-                    System.out.print(ConsoleColors.RESET);
-                    System.out.print(ConsoleColors.WHITE_BRIGHT);
-                    System.out.println(strBuffer.substring(0, CONTEXT_LINE_LENGTH));
-                }
-                else {
-                    System.out.print(ConsoleColors.RESET);
-                    System.out.print(ConsoleColors.GREEN);
-                    System.out.print("║  ");
-                    System.out.print(ConsoleColors.RESET);
-                    System.out.print(ConsoleColors.PURPLE);
-                    System.out.print("║  ");
-                    System.out.print(ConsoleColors.RESET);
-                    System.out.print(ConsoleColors.WHITE_BRIGHT);
-                    System.out.println(strBuffer);
-                    break;
-                }
+            if(!retweet.isDeleted()) {
+                strBuffer.append(retweet.getContext());
+                while (!strBuffer.isEmpty()) {
+                    if (strBuffer.length() > CONTEXT_LINE_LENGTH) {
+                        System.out.print(ConsoleColors.RESET);
+                        System.out.print(ConsoleColors.GREEN);
+                        System.out.print("║  ");
+                        System.out.print(ConsoleColors.RESET);
+                        System.out.print(ConsoleColors.PURPLE);
+                        System.out.print("║  ");
+                        System.out.print(ConsoleColors.RESET);
+                        System.out.print(ConsoleColors.WHITE_BRIGHT);
+                        System.out.println(strBuffer.substring(0, CONTEXT_LINE_LENGTH));
+                    } else {
+                        System.out.print(ConsoleColors.RESET);
+                        System.out.print(ConsoleColors.GREEN);
+                        System.out.print("║  ");
+                        System.out.print(ConsoleColors.RESET);
+                        System.out.print(ConsoleColors.PURPLE);
+                        System.out.print("║  ");
+                        System.out.print(ConsoleColors.RESET);
+                        System.out.print(ConsoleColors.WHITE_BRIGHT);
+                        System.out.println(strBuffer);
+                        break;
+                    }
 
-                strBuffer.delete(0, CONTEXT_LINE_LENGTH);
+                    strBuffer.delete(0, CONTEXT_LINE_LENGTH);
+                }
+            }
+            else {
+                System.out.print(ConsoleColors.RESET);
+                System.out.print(ConsoleColors.GREEN);
+                System.out.print("║  ");
+                System.out.print(ConsoleColors.RESET);
+                System.out.print(ConsoleColors.PURPLE);
+                System.out.print("║  ");
+                System.out.print(ConsoleColors.RESET);
+                System.out.print(ConsoleColors.WHITE+ConsoleColors.WHITE_UNDERLINED);
+                System.out.println("This Tweet Have been Deleted");
             }
             System.out.print(ConsoleColors.RESET);
             System.out.print(ConsoleColors.GREEN);
@@ -152,41 +181,49 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
 
         }
 
-
-        strBuffer=new StringBuffer(256);
-        strBuffer.append(tweet.getContext());
-        while (!strBuffer.isEmpty()) {
-            if(strBuffer.length()>CONTEXT_LINE_LENGTH) {
-                System.out.print(ConsoleColors.RESET);
-                System.out.print(ConsoleColors.GREEN);
-                System.out.print("║  ");
-                System.out.print(ConsoleColors.RESET);
-                System.out.print(ConsoleColors.WHITE_BRIGHT);
-                System.out.println(strBuffer.substring(0, CONTEXT_LINE_LENGTH));
+        if(!tweet.isDeleted()) {
+            strBuffer = new StringBuffer(256);
+            strBuffer.append(tweet.getContext());
+            while (!strBuffer.isEmpty()) {
+                if (strBuffer.length() > CONTEXT_LINE_LENGTH) {
+                    System.out.print(ConsoleColors.RESET);
+                    System.out.print(ConsoleColors.GREEN);
+                    System.out.print("║  ");
+                    System.out.print(ConsoleColors.RESET);
+                    System.out.print(ConsoleColors.WHITE_BRIGHT);
+                    System.out.println(strBuffer.substring(0, CONTEXT_LINE_LENGTH));
+                } else {
+                    System.out.print(ConsoleColors.RESET);
+                    System.out.print(ConsoleColors.GREEN);
+                    System.out.print("║  ");
+                    System.out.print(ConsoleColors.RESET);
+                    System.out.print(ConsoleColors.WHITE_BRIGHT);
+                    System.out.println(strBuffer);
+                    break;
+                }
+                strBuffer.delete(0, CONTEXT_LINE_LENGTH);
             }
-            else {
-                System.out.print(ConsoleColors.RESET);
-                System.out.print(ConsoleColors.GREEN);
-                System.out.print("║  ");
-                System.out.print(ConsoleColors.RESET);
-                System.out.print(ConsoleColors.WHITE_BRIGHT);
-                System.out.println(strBuffer);
-                break;
-            }
-            strBuffer.delete(0, CONTEXT_LINE_LENGTH);
+        }
+        else {
+            System.out.print(ConsoleColors.RESET);
+            System.out.print(ConsoleColors.GREEN);
+            System.out.print("║  ");
+            System.out.print(ConsoleColors.RESET);
+            System.out.print(ConsoleColors.WHITE+ConsoleColors.WHITE_UNDERLINED);
+            System.out.println("This Tweet Have been Deleted");
         }
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN);
         System.out.print("╚═══════════");
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN_BRIGHT);
-        System.out.print("Retweets:"+retweets);
+        System.out.print("Retweets:"+tweet.numOfRetweeters());
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN);
         System.out.print("═════");
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN_BRIGHT);
-        System.out.print("Likes:"+likes);
+        System.out.print("Likes:"+tweet.numOfLikes());
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN);
         System.out.println("══════════════════════");

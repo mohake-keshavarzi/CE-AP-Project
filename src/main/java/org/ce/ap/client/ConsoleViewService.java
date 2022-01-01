@@ -12,7 +12,7 @@ public interface ConsoleViewService {
 
     void printError(String input);
 
-    void printTweet(Tweet tweet, int likes, int retweets);
+    void printTweet(Tweet tweet);
 
 
 }
