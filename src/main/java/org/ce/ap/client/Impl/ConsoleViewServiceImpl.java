@@ -62,8 +62,10 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
             return;
         }
         StringBuffer strBuffer=new StringBuffer(256);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd    hh:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd    HH:mm");
+        Tweet retweet=tweet.getReTweetedTweet();
         Profile sender=tweet.getSender();
+
         System.out.print(ConsoleColors.WHITE_BRIGHT);
         System.out.print("▒ ");
         System.out.print(ConsoleColors.RESET);
@@ -74,14 +76,84 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
         System.out.print("@"+sender.getUsername()+"\t\t\t");
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN);
-        System.out.print(tweet.getSubmissionDate().format(formatter).toString());
+        System.out.print(tweet.getSubmissionDate().format(formatter));
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.WHITE);
-        System.out.println("  Tweeted:");
+        if(retweet==null)
+            System.out.println("  Tweeted:");
+        else System.out.println("  reTweeted:");
 
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN);
         System.out.println("║");
+
+        // print retweet if exists
+        if(retweet!= null){
+            System.out.print(ConsoleColors.RESET);
+            System.out.print(ConsoleColors.GREEN);
+            System.out.print("║  ");
+            System.out.print(ConsoleColors.WHITE);
+            System.out.print("▒ ");
+            System.out.print(ConsoleColors.RESET);
+            System.out.print(ConsoleColors.PURPLE_BOLD_BRIGHT);
+            System.out.print(sender.getFirstName()+" "+sender.getLastName()+"   ");
+            System.out.print(ConsoleColors.RESET);
+            System.out.print(ConsoleColors.WHITE);
+            System.out.print("@"+sender.getUsername()+"\t\t\t");
+            System.out.print(ConsoleColors.RESET);
+            System.out.print(ConsoleColors.PURPLE);
+            System.out.print(tweet.getSubmissionDate().format(formatter));
+            System.out.print(ConsoleColors.RESET);
+            System.out.print(ConsoleColors.WHITE);
+            System.out.println("  Tweeted:");
+
+            System.out.print(ConsoleColors.RESET);
+            System.out.print(ConsoleColors.GREEN);
+            System.out.print("║  ");
+            System.out.print(ConsoleColors.RESET);
+            System.out.print(ConsoleColors.PURPLE);
+            System.out.println("║  ");
+
+
+            strBuffer.append(retweet.getContext());
+            while (!strBuffer.isEmpty()) {
+                if(strBuffer.length()>CONTEXT_LINE_LENGTH) {
+                    System.out.print(ConsoleColors.RESET);
+                    System.out.print(ConsoleColors.GREEN);
+                    System.out.print("║  ");
+                    System.out.print(ConsoleColors.RESET);
+                    System.out.print(ConsoleColors.PURPLE);
+                    System.out.print("║  ");
+                    System.out.print(ConsoleColors.RESET);
+                    System.out.print(ConsoleColors.WHITE_BRIGHT);
+                    System.out.println(strBuffer.substring(0, CONTEXT_LINE_LENGTH));
+                }
+                else {
+                    System.out.print(ConsoleColors.RESET);
+                    System.out.print(ConsoleColors.GREEN);
+                    System.out.print("║  ");
+                    System.out.print(ConsoleColors.RESET);
+                    System.out.print(ConsoleColors.PURPLE);
+                    System.out.print("║  ");
+                    System.out.print(ConsoleColors.RESET);
+                    System.out.print(ConsoleColors.WHITE_BRIGHT);
+                    System.out.println(strBuffer);
+                    break;
+                }
+
+                strBuffer.delete(0, CONTEXT_LINE_LENGTH);
+            }
+            System.out.print(ConsoleColors.RESET);
+            System.out.print(ConsoleColors.GREEN);
+            System.out.print("║  ");
+            System.out.print(ConsoleColors.RESET);
+            System.out.print(ConsoleColors.PURPLE);
+            System.out.println("╚══════════════════════════════════════");
+
+        }
+
+
+        strBuffer=new StringBuffer(256);
         strBuffer.append(tweet.getContext());
         while (!strBuffer.isEmpty()) {
             if(strBuffer.length()>CONTEXT_LINE_LENGTH) {
