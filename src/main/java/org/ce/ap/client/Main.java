@@ -1,12 +1,9 @@
 package main.java.org.ce.ap.client;
 
-import main.java.org.ce.ap.client.Impl.CommandParserServiceImpl;
-import main.java.org.ce.ap.client.Impl.ConnectionServiceImpl;
 import main.java.org.ce.ap.client.Impl.ConsoleViewServiceImpl;
 import main.java.org.ce.ap.server.Profile;
 import main.java.org.ce.ap.server.Tweet;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 
 public class Main {
@@ -43,7 +40,7 @@ public class Main {
 //        CommandParserServiceImpl commander=CommandParserServiceImpl.getInstance();
 //        commander.runAuthenticationInterface();
 
-        RequestPackageMaker packageMaker=new RequestPackageMaker(RequestMethods.AUTHENTICATION,"Hello");
+        RequestPackageMaker packageMaker=new RequestPackageMaker(netWorkingParams.AUTHENTICATION_REQUEST,"Hello");
         packageMaker.putParameter("username",12);
         ArrayList<String > in= new ArrayList<>();
         in.add("javad");
