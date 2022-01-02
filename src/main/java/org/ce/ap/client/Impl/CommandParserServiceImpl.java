@@ -45,8 +45,9 @@ public class CommandParserServiceImpl implements CommandParserService{
         password = scanner.nextLine();
         scanner.close();
 
-        console.printError(username);
-        console.printError(password);
+        console.printNormal("Connecting to "+username+" ...");
+        console.printNormal("Logging in ...");
+
     }
     @Override
     public void showMainMenu(){}

@@ -7,6 +7,7 @@ import main.java.org.ce.ap.server.Profile;
 import main.java.org.ce.ap.server.Tweet;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
@@ -39,9 +40,17 @@ public class Main {
             console.printError(e.toString());
         }
 
-        CommandParserServiceImpl commander=CommandParserServiceImpl.getInstance();
-        commander.runAuthenticationInterface();
+//        CommandParserServiceImpl commander=CommandParserServiceImpl.getInstance();
+//        commander.runAuthenticationInterface();
 
+        RequestPackageMaker packageMaker=new RequestPackageMaker(RequestMethods.AUTHENTICATION,"Hello");
+        packageMaker.putParameter("username",12);
+        ArrayList<String > in= new ArrayList<>();
+        in.add("javad");
+        in.add("ted");
+        packageMaker.putParameterArray("Likes",in);
+
+        System.out.println(packageMaker);
     }
 
 
