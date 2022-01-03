@@ -3,7 +3,7 @@ package main.java.org.ce.ap.client;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
+import main.java.org.ce.ap.netWorkingParams;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -13,13 +13,14 @@ public class RequestPackageMaker {
     private Map m;
 
 
-    public RequestPackageMaker(netWorkingParams method, String description){
+    public RequestPackageMaker(netWorkingParams.RequestPackage.Methods method, String description){
         jsonObject= new JSONObject();
-        jsonObject.put("method",method);
-        jsonObject.put("description",description);
+        jsonObject.put(netWorkingParams.RequestPackage.Fields.method,method);
+        jsonObject.put(netWorkingParams.RequestPackage.Fields.description,description);
         m=new LinkedHashMap();
         setParameters();
     }
+
 
 
     public void putParameter(String parameterName,Object value){
@@ -27,7 +28,7 @@ public class RequestPackageMaker {
         m.put(parameterName,value);
         setParameters();
     }
-    public void putParameter(netWorkingParams parameter,Object value){
+    public void putParameter(netWorkingParams.RequestPackage.ParametersFields parameter, Object value){
         putParameter(parameter.name(),value);
     }
 
@@ -42,8 +43,8 @@ public class RequestPackageMaker {
     }
 
 
-        private void setParameters(){
-        jsonObject.put("parameterValues",m);
+    private void setParameters(){
+        jsonObject.put(netWorkingParams.RequestPackage.Fields.parametersValues,m);
     }
 
     public String toString(){
