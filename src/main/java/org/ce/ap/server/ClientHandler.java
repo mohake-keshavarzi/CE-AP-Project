@@ -38,15 +38,17 @@ public class ClientHandler implements Runnable{
             while (!stopFlag){
                 int read=in.read(buffer);
                 String input=new String(buffer,0,read);
-                System.out.println("Client:"+clientId+" Says:"+input);
-                switch (input) {
-                    case "Hey" -> response = "Hey Back";
-                    case "Bye" -> {
-                        response = "GoodBye";
-                        stopFlag = true;
-                    }
-                    default -> response = "What?";
-                }
+//                System.out.println("Client:"+clientId+" Says:"+input);
+                RequestToResponse requestToResponse=new RequestToResponse();
+//                switch (input) {
+//                    case "Hey" -> response = "Hey Back";
+//                    case "Bye" -> {
+//                        response = "GoodBye";
+//                        stopFlag = true;
+//                    }
+//                    default -> response = "What?";
+//                }
+                response=requestToResponse.createResponse(input);
                 out.write((response.getBytes()));
             }
         }
