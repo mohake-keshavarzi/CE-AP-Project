@@ -6,6 +6,9 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import main.java.org.ce.ap.netWorkingParams;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class ResponsePackageParser {
 
     private JSONObject jsonObject;
@@ -45,5 +48,16 @@ public class ResponsePackageParser {
 
     public boolean hasError(){
         return hasError;
+    }
+
+    public HashMap<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields,Boolean> paresAuthenticationResponse(){
+        HashMap<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields,Boolean> results =
+                new HashMap<>(
+                (Map<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields, Boolean>)
+                        resultsArray.get(0));
+        if(results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed)==null
+        || results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated)==null)
+            throw new IllegalStateException("This package dose not have authentication results");
+        return results;
     }
 }

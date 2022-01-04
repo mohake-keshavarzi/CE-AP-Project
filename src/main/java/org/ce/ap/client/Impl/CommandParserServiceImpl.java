@@ -1,9 +1,12 @@
 package main.java.org.ce.ap.client.Impl;
 
 import main.java.org.ce.ap.client.CommandParserService;
+import main.java.org.ce.ap.client.ResponsePackageParser;
 import main.java.org.ce.ap.netWorkingParams;
 import main.java.org.ce.ap.client.RequestPackageMaker;
+import org.json.simple.parser.ParseException;
 
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class CommandParserServiceImpl implements CommandParserService{
@@ -31,7 +34,7 @@ public class CommandParserServiceImpl implements CommandParserService{
 
 
     @Override
-    public void runAuthenticationInterface() throws IllegalStateException{
+    public void runAuthenticationInterface() throws IllegalStateException,ParseException{
         boolean retry =false;
         Scanner scanner = new Scanner(System.in);
         console.printHeading("Login");
@@ -66,7 +69,19 @@ public class CommandParserServiceImpl implements CommandParserService{
                 }
             }
         }while (retry);
-        network.receiveFromServer();
+        ResponsePackageParser packageParser = new ResponsePackageParser(network.receiveFromServer());
+        HashMap<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields,Boolean> authenticationResults;
+        authenticationResults=packageParser.paresAuthenticationResponse();
+        if(authenticationResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed))
+            console.printNormal("Logged in");
+        else {
+            console.printError("Authentication Failed wrong username or password");
+            throw new  IllegalArgumentException("Wong username or password");
+        }
+        if(authenticationResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated))
+            console.printNormal("Your account created");
+        else
+            console.printNormal("WelcomeBack");
         scanner.close();
 
     }
