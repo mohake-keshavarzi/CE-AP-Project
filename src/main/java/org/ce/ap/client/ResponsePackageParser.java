@@ -6,8 +6,6 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import main.java.org.ce.ap.netWorkingParams;
 
-import java.util.Map;
-
 public class ResponsePackageParser {
 
     private JSONObject jsonObject;
@@ -24,25 +22,25 @@ public class ResponsePackageParser {
         Object obj = new JSONParser().parse(inputPackage);
         jsonObject = (JSONObject) obj;
 
-        hasError=(boolean) jsonObject.get(netWorkingParams.ResponsePackage.HAS_ERROR);
+        hasError=(boolean) jsonObject.get(netWorkingParams.ResponsePackage.hasError);
         if(hasError){
             parseErrorPackage(jsonObject);
         }
         else{
-            parsePackage(jsonObject);
+            parseStandardPackage(jsonObject);
         }
 
     }
 
     private void parseErrorPackage(JSONObject ErrorObj){
-        errorType=(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes) ErrorObj.get(netWorkingParams.ResponsePackage.ErrorPackage.Fields.ERROR_TYPE);
-        errorCode=(netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes) ErrorObj.get(netWorkingParams.ResponsePackage.ErrorPackage.Fields.ERROR_CODE);
-        errorParametersArray=(JSONArray) jsonObject.get(netWorkingParams.ResponsePackage.ErrorPackage.Fields.ERROR_PARAMETERS);
+        errorType=(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes) ErrorObj.get(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorType);
+        errorCode=(netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes) ErrorObj.get(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorCode);
+        errorParametersArray=(JSONArray) jsonObject.get(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorParameters);
     }
 
-    private void parsePackage(JSONObject object){
-        resultsCount=(int) object.get(netWorkingParams.ResponsePackage.StandardResponsePackage.COUNT);
-        resultsArray=(JSONArray) object.get(netWorkingParams.ResponsePackage.StandardResponsePackage.RESULTS);
+    private void parseStandardPackage(JSONObject object){
+        resultsCount=(int) object.get(netWorkingParams.ResponsePackage.StandardResponsePackage.count);
+        resultsArray=(JSONArray) object.get(netWorkingParams.ResponsePackage.StandardResponsePackage.results);
     }
 
     public boolean hasError(){

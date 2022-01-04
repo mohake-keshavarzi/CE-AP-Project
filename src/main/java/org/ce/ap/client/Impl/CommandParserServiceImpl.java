@@ -50,7 +50,7 @@ public class CommandParserServiceImpl implements CommandParserService{
         String password=null;
         password = scanner.nextLine();
         RequestPackageMaker request = new RequestPackageMaker(netWorkingParams.RequestPackage.Methods.AUTHENTICATION_REQUEST,"connect to @"+username+" Creat a new account");
-        request.putParameter(netWorkingParams.RequestPackage.ParametersFields.PASSWORD,password);
+        request.putParameter(netWorkingParams.RequestPackage.ParametersFields.password,password);
         console.printNormal("Connecting to @"+username+" ...");
         console.printNormal("Logging in ...");
         do {
