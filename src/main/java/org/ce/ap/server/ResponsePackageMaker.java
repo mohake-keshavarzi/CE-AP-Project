@@ -16,6 +16,8 @@ public class ResponsePackageMaker {
     private Map m;
     private final boolean isErrorPackage;
     private boolean errorPackageCreated=false;
+    private boolean standardPackageCreated=false;
+
 
     public ResponsePackageMaker(boolean isErrorPackage){
         jsonObject= new JSONObject();
@@ -27,11 +29,12 @@ public class ResponsePackageMaker {
     public void createErrorPackage(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes errorType,
                                      netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes errorCode){
         if(!isErrorPackage) throw new IllegalStateException("It is not an error package");
-        if(errorPackageCreated) throw new IllegalStateException("error structure have been created before");
+        if(errorPackageCreated) throw new IllegalStateException("error structure has been created before");
         errorParametersArray=new JSONArray();
         jsonObject.put(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorType, errorType);
         jsonObject.put(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorCode, errorCode);
         jsonObject.put(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorParameters,errorParametersArray);
+        errorPackageCreated=true;
     }
     public void addErrorParameter(netWorkingParams.ResponsePackage.ErrorPackage.ErrorParametersFields field,Object value){
         if(!isErrorPackage) throw new IllegalStateException("It is not an error package");
@@ -42,9 +45,11 @@ public class ResponsePackageMaker {
 
     public void creatStandardResponsePackage(){
         if(isErrorPackage) throw new IllegalStateException("It is not a standard package");
+        if(standardPackageCreated) throw new IllegalStateException("standard structure has been created before");
         resultsArray=new JSONArray();
         jsonObject.put(netWorkingParams.ResponsePackage.StandardResponsePackage.count,resultsArray.size());
         jsonObject.put(netWorkingParams.ResponsePackage.StandardResponsePackage.results,resultsArray);
+        standardPackageCreated=true;
     }
 
     public void addResult(Object obj){
@@ -53,6 +58,10 @@ public class ResponsePackageMaker {
         jsonObject.put(netWorkingParams.ResponsePackage.StandardResponsePackage.count,resultsArray.size());
         jsonObject.put(netWorkingParams.ResponsePackage.StandardResponsePackage.results,resultsArray);
 
+    }
+
+    public String getPackage(){
+        return jsonObject.toString();
     }
 
 }
