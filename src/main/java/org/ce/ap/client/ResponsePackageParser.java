@@ -21,6 +21,12 @@ public class ResponsePackageParser {
 
 //    private Map errorParameters;
 
+    /**
+     * gets a string and parse it to a standard response package or error package
+     * checks weather the package is a standard one or an error one and creates the appropriate package
+     * @param inputPackage string of request package
+     * @throws ParseException if there was any error parsing package
+     */
     public ResponsePackageParser(String inputPackage) throws ParseException {
         Object obj = new JSONParser().parse(inputPackage);
         jsonObject = (JSONObject) obj;
@@ -50,6 +56,10 @@ public class ResponsePackageParser {
         return hasError;
     }
 
+    /**
+     * if input package was an authentication package parse it and returns needed parameters
+     * @return a hashmap which shows weather the authentication was successful
+     */
     public HashMap<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields,Boolean> paresAuthenticationResponse(){
         HashMap<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields,Boolean> results =
                 new HashMap<>(

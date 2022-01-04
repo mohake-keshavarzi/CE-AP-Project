@@ -19,7 +19,8 @@ public enum netWorkingParams {
         }
 
         public enum ParametersFields {//available parameters to have for request
-            password
+            password,
+            username
 
         }
 
@@ -37,9 +38,12 @@ public enum netWorkingParams {
                 errorParameters//other needed parameters for describing the error
             }
             public enum ErrorTypes{
-
+                PACKAGE_ERROR
             }
             public enum ErrorCodes{
+                UNABLE_TO_PARSE_PACKAGE
+            }
+            public enum ErrorParametersFields{
 
             }
         }

@@ -18,7 +18,10 @@ public class ResponsePackageMaker {
     private boolean errorPackageCreated=false;
     private boolean standardPackageCreated=false;
 
-
+    /**
+     * initializes the response package
+     * @param isErrorPackage if the response package should be an error package one
+     */
     public ResponsePackageMaker(boolean isErrorPackage){
         jsonObject= new JSONObject();
         m=new LinkedHashMap();
@@ -26,6 +29,11 @@ public class ResponsePackageMaker {
         jsonObject.put(netWorkingParams.ResponsePackage.hasError,isErrorPackage);
     }
 
+    /**
+     * if package is an error one, this method will initialize the error package
+     * @param errorType type of error
+     * @param errorCode code of error
+     */
     public void createErrorPackage(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes errorType,
                                      netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes errorCode){
         if(!isErrorPackage) throw new IllegalStateException("It is not an error package");
@@ -36,13 +44,22 @@ public class ResponsePackageMaker {
         jsonObject.put(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorParameters,errorParametersArray);
         errorPackageCreated=true;
     }
-    public void addErrorParameter(netWorkingParams.ResponsePackage.ErrorPackage.ErrorParametersFields field,Object value){
+
+    /**
+     * if package has been initialized as an error one, this package will put error parameters to it
+     * @param field field of error parameter
+     * @param value value of that error parameter
+     */
+    public void putErrorParameter(netWorkingParams.ResponsePackage.ErrorPackage.ErrorParametersFields field,Object value){
         if(!isErrorPackage) throw new IllegalStateException("It is not an error package");
         m.put(field,value);
         errorParametersArray.add(m);
         jsonObject.put(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorParameters,errorParametersArray);
     }
 
+    /**
+     * if package is a standard one, this method will initialize it as a standard package
+     */
     public void creatStandardResponsePackage(){
         if(isErrorPackage) throw new IllegalStateException("It is not a standard package");
         if(standardPackageCreated) throw new IllegalStateException("standard structure has been created before");
@@ -52,14 +69,26 @@ public class ResponsePackageMaker {
         standardPackageCreated=true;
     }
 
-    public void addResult(Object obj){
+    private void addResult(Object obj){
         if(isErrorPackage) throw new IllegalStateException("It is not a standard package");
         resultsArray.add(obj);
         jsonObject.put(netWorkingParams.ResponsePackage.StandardResponsePackage.count,resultsArray.size());
         jsonObject.put(netWorkingParams.ResponsePackage.StandardResponsePackage.results,resultsArray);
 
     }
+    /**
+     * if package is s standard one, it will add a result Map to array of results
+     * @param m a hashmap which contains parameters names and values
+     */
 
+    public void addResult(Map m){
+        addResult(m);
+    }
+
+    /**
+     * returns the generated package as a String
+     * @return a String of package
+     */
     public String getPackage(){
         return jsonObject.toString();
     }
