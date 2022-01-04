@@ -51,7 +51,7 @@ import java.util.Map;
         m.put(arrayName,jsonArray);
         setParameters();
     }
-    public void putParameterArray(netWorkingParams arrayName, Collection data){
+    public void putParameterArray(netWorkingParams.RequestPackage.ParametersFields arrayName, Collection data){
         putParameterArray(arrayName.name(),data);
     }
 

@@ -43,9 +43,7 @@ public enum netWorkingParams {
             public enum ErrorCodes{
                 UNABLE_TO_PARSE_PACKAGE
             }
-            public enum ErrorParametersFields{
 
-            }
         }
         //Standard response package
         public enum StandardResponsePackage{

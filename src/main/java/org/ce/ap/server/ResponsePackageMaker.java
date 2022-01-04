@@ -46,14 +46,12 @@ public class ResponsePackageMaker {
     }
 
     /**
-     * if package has been initialized as an error one, this package will put error parameters to it
-     * @param field field of error parameter
-     * @param value value of that error parameter
+     * if package has been initialized as an error one, this package will add error parameters to it
+     * @param value value to be added
      */
-    public void putErrorParameter(netWorkingParams.ResponsePackage.ErrorPackage.ErrorParametersFields field,Object value){
+    public void addErrorParameter(Object value){
         if(!isErrorPackage) throw new IllegalStateException("It is not an error package");
-        m.put(field,value);
-        errorParametersArray.add(m);
+        errorParametersArray.add(value);
         jsonObject.put(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorParameters,errorParametersArray);
     }
 
