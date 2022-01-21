@@ -66,9 +66,10 @@ public class NetworkServiceImpl implements NetworkService{
                     pool.execute(clientHandlers.get(clientHandlers.size() - 1));
                     System.out.println("New Client accepted. Num of clients:" + clientHandlers.size());
                 }
-                else
+                else {
                     connectionSocket.close();
                     System.out.println("Clients number limit reached");
+                }
             } catch (IOException ex) {
                 System.err.println("Error in accepting new client " + ex);
             }

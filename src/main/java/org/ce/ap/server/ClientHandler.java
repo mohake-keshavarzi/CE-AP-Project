@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.net.SocketException;
 
 public class ClientHandler implements Runnable{
     private Socket connectionSocket;
@@ -74,7 +75,9 @@ public class ClientHandler implements Runnable{
             }
         }
         catch (IOException ex){
-            ex.printStackTrace();
+            System.out.println("Connection lost with "+clientId+"    "+ex);
+            //ex.printStackTrace();
+
         }
         finally {
 
