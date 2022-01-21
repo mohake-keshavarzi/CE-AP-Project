@@ -21,7 +21,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @return current instance or newly created instance of this class
      */
 
-    protected static AuthenticationServiceImpl getInstance(){
+    public static AuthenticationServiceImpl getInstance(){
         if(INSTANCE==null) {
             INSTANCE = new AuthenticationServiceImpl(ProfilesManagerImpl.getInstance());
         }
