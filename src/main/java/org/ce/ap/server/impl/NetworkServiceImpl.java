@@ -16,8 +16,9 @@ public class NetworkServiceImpl implements NetworkService{
     private ServerSocket welcomeSocket;
     private ArrayList<ClientHandler> clientHandlers;
     private ExecutorService pool;
+    private int clientsNumberLimit=4;
     private NetworkServiceImpl(){
-        clientHandlers=new ArrayList<>();
+        clientHandlers=new ArrayList<>(clientsNumberLimit);
     }
 
     /**
@@ -58,15 +59,19 @@ public class NetworkServiceImpl implements NetworkService{
      * after that creates a new socket and new ClientHandler and runs it in a thread pool
      */
     public void acceptNewClient(ProfilesManagerImpl prf,AuthenticationServiceImpl aut){
-        try {
-            Socket connectionSocket = welcomeSocket.accept();
-            clientHandlers.add(new ClientHandler(connectionSocket, UUID.randomUUID().toString(),prf,aut));
-            pool.execute(clientHandlers.get(clientHandlers.size()-1));
-            System.out.println("New Client accepted. Num of clients:"+clientHandlers.size());
-        }
-        catch (IOException ex){
-            System.err.println("Error in accepting new client "+ex);
-        }
+            try {
+                Socket connectionSocket = welcomeSocket.accept();
+                if(clientHandlers.size()<clientsNumberLimit) {
+                    clientHandlers.add(new ClientHandler(connectionSocket, UUID.randomUUID().toString(), prf, aut));
+                    pool.execute(clientHandlers.get(clientHandlers.size() - 1));
+                    System.out.println("New Client accepted. Num of clients:" + clientHandlers.size());
+                }
+                else
+                    connectionSocket.close();
+                    System.out.println("Clients number limit reached");
+            } catch (IOException ex) {
+                System.err.println("Error in accepting new client " + ex);
+            }
     }
 
     /**
@@ -99,5 +104,13 @@ public class NetworkServiceImpl implements NetworkService{
      */
     public void removeClient(ClientHandler clientHandler){
         clientHandlers.remove(clientHandler);
+    }
+
+    /**
+     * checks weather the limit number of client has been reached
+     * @return true if the list is full
+     */
+    public boolean isClientsListFull(){
+        return clientHandlers.size()==clientsNumberLimit;
     }
 }

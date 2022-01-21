@@ -8,10 +8,13 @@ public class Main {
     public static void main(String[] args) {
         ProfilesManagerImpl profilesManager=ProfilesManagerImpl.getInstance();
         AuthenticationServiceImpl authenticationService=AuthenticationServiceImpl.getInstance();
+
         NetworkServiceImpl networkService= NetworkServiceImpl.getInstance();
         networkService.init(7660);
-        networkService.acceptNewClient(profilesManager,authenticationService);
+        while (true){
+            networkService.acceptNewClient(profilesManager,authenticationService);
+        }
 
-        networkService.closeWelcomeSocket();
+
     }
 }

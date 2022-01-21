@@ -45,11 +45,13 @@ public class ClientHandler implements Runnable{
             OutputStream out = connectionSocket.getOutputStream();
             InputStream in = connectionSocket.getInputStream();
             byte[] buffer = new byte[2048];
+            ClientController clientController =new ClientController(profilesManager,authenticationService);
             while (!stopFlag){
+
                 int read=in.read(buffer);
                 String input=new String(buffer,0,read);
 //                System.out.println("Client:"+clientId+" Says:"+input);
-                ClientController clientController =new ClientController(profilesManager,authenticationService);
+
 //                switch (input) {
 //                    case "Hey" -> response = "Hey Back";
 //                    case "Bye" -> {
@@ -75,6 +77,7 @@ public class ClientHandler implements Runnable{
             ex.printStackTrace();
         }
         finally {
+
             try {
                 connectionSocket.close();
             }catch (IOException ex){
