@@ -18,7 +18,6 @@ public class ResponsePackageParser {
     private int resultsCount;
     private JSONArray resultsArray;
     private JSONArray errorParametersArray;
-
 //    private Map errorParameters;
 
     /**
@@ -57,17 +56,26 @@ public class ResponsePackageParser {
     }
 
     /**
-     * if input package was an authentication package parse it and returns needed parameters
-     * @return a hashmap which shows weather the authentication was successful
+     * if input package was an authentication package parse it
+     * @return true if sign in was successful
      */
-    public HashMap<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields,Boolean> paresAuthenticationResponse(){
+    public boolean wasSignInSuccessful(){
         HashMap<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields,Boolean> results =
                 new HashMap<>(
                 (Map<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields, Boolean>)
                         resultsArray.get(0));
-        if(results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed)==null
-        || results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated)==null)
-            throw new IllegalStateException("This package dose not have authentication results");
-        return results;
+        if(results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed)==null)
+            throw new IllegalStateException("This package dose not have Sign in results");
+        return results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed);
+    }
+
+    public boolean wasSignUpSuccessful(){
+        HashMap<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields,Boolean> results =
+                new HashMap<>(
+                        (Map<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields, Boolean>)
+                                resultsArray.get(0));
+        if(results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated)==null)
+            throw new IllegalStateException("This package dose not have Sign up results");
+        return results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated);
     }
 }

@@ -5,7 +5,12 @@ import org.json.simple.parser.ParseException;
 
 public interface CommandParserService {
 
-    void runAuthenticationInterface()throws ParseException;
+    void showWelcome();
+
+    void runSignInInterface()throws ParseException;
+
+    void runSignUpInterface()throws ParseException;
+
 
     void showMainMenu();
 

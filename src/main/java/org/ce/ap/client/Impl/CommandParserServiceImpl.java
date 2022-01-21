@@ -2,11 +2,9 @@ package main.java.org.ce.ap.client.Impl;
 
 import main.java.org.ce.ap.client.CommandParserService;
 import main.java.org.ce.ap.client.ResponsePackageParser;
-import main.java.org.ce.ap.netWorkingParams;
 import main.java.org.ce.ap.client.RequestPackageMaker;
 import org.json.simple.parser.ParseException;
 
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class CommandParserServiceImpl implements CommandParserService{
@@ -32,17 +30,39 @@ public class CommandParserServiceImpl implements CommandParserService{
     }
 
 
+    @Override
+    public void showWelcome(){
+        Scanner scanner = new Scanner(System.in);
+        console.printHeading("Welcome");
+        console.printNormal("If you already have an account choose Sign In option");
+        console.printNormal("If you don't have any account feel free to creat one from Sign Up option");
+        console.printNormal("");
+        console.printOption("1. Sign In");
+        console.printOption("2. Sign Up");
+        console.printOption("3. Exit");
+
+        console.printNormal("");
+        console.printNormal("print the number of your option:",' ');
+        int choice= scanner.nextInt();
+        scanner.close();
+        if(choice == 1){
+            runSignInInterface();
+        }else if(choice == 2){
+            runSignUpInterface();
+        }else {
+            System.exit(0);
+        }
+    }
 
     @Override
-    public void runAuthenticationInterface() throws IllegalStateException,ParseException{
+    public void runSignInInterface() throws IllegalStateException{
         boolean retry =false;
         Scanner scanner = new Scanner(System.in);
-        console.printHeading("Login");
+        console.printHeading("Sign In");
         console.printNormal("If you already have an account Enter your username and password");
-        console.printNormal("If you don't have any account enter a username and a password to creat one");
         console.printNormal("");
         console.printNormal("Username:  ",' ');
-        String username=null;
+        String username;
         username = scanner.nextLine();
         while (username==null || username.equals("") || username.contains(" ")){
             console.printError("Enter a valid username");
@@ -50,11 +70,10 @@ public class CommandParserServiceImpl implements CommandParserService{
             username = scanner.nextLine();
         }
         console.printNormal("Password:  ",' ');
-        String password=null;
+        String password;
         password = scanner.nextLine();
-        RequestPackageMaker request = new RequestPackageMaker(netWorkingParams.RequestPackage.Methods.AUTHENTICATION_REQUEST,"connect to @"+username+" Creat a new account");
-        request.putParameter(netWorkingParams.RequestPackage.ParametersFields.username,username);
-        request.putParameter(netWorkingParams.RequestPackage.ParametersFields.password,password);
+        RequestPackageMaker request = new RequestPackageMaker("request to connect to @"+username);
+        request.creatSignInRequestPackage(username,password);
         console.printNormal("Connecting to @"+username+" ...");
         console.printNormal("Logging in ...");
         do {
@@ -64,28 +83,34 @@ public class CommandParserServiceImpl implements CommandParserService{
                 console.printError(ex + " Connection to the server lost.");
                 console.printNormal("Do you want to retry?(y/n)");
                 retry = scanner.nextLine().equals("y");
-                if (retry==false){
+                if (!retry){
                     console.printError("Failed to Login");
                     throw new IllegalStateException("failed to connect. no connection");
                 }
             }
         }while (retry);
-        ResponsePackageParser packageParser = new ResponsePackageParser(network.receiveFromServer());
-        HashMap<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields,Boolean> authenticationResults;
-        authenticationResults=packageParser.paresAuthenticationResponse();
-        if(authenticationResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed))
-            console.printNormal("Logged in");
-        else {
-            console.printError("Authentication Failed wrong username or password");
-            throw new  IllegalArgumentException("Wong username or password");
+        ResponsePackageParser packageParser;
+        try {
+            packageParser = new ResponsePackageParser(network.receiveFromServer());
+            if (packageParser.wasSignInSuccessful())
+                console.printNormal("Logged in. WelcomeBack");
+            else {
+                console.printError("Authentication Failed wrong username or password");
+                throw new IllegalArgumentException("Wong username or password");
+            }
+        }catch (ParseException e){
+            console.printError("Failed to parse response package from server "+e);
         }
-        if(authenticationResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated))
-            console.printNormal("Your account created");
-        else
-            console.printNormal("WelcomeBack");
+
         scanner.close();
 
     }
+
+    @Override
+    public void runSignUpInterface() throws IllegalStateException{
+
+    }
+
     @Override
     public void showMainMenu(){}
     @Override

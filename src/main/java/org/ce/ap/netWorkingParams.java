@@ -13,14 +13,17 @@ public enum netWorkingParams {
         }
 
         public enum Methods {//available methods to request
-            AUTHENTICATION_REQUEST,
+            SIGN_IN_REQUEST,
+            SIGN_UP_REQUEST,
             SEND_TWEET_REQUEST,
             GET_TIMELINE_REQUEST
         }
 
         public enum ParametersFields {//available parameters to have for request
             password,
-            username
+            username,
+            firstname,
+            lastname
 
         }
 
@@ -38,10 +41,12 @@ public enum netWorkingParams {
                 errorParameters//other needed parameters for describing the error
             }
             public enum ErrorTypes{
-                PACKAGE_ERROR
+                PACKAGE_ERROR,
+                SIGN_IN_ERROR
             }
             public enum ErrorCodes{
-                UNABLE_TO_PARSE_PACKAGE
+                UNABLE_TO_PARSE_PACKAGE,
+                INTERNAL_SERVER_ERROR
             }
 
         }

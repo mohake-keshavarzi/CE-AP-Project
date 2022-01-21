@@ -13,19 +13,32 @@ import java.util.Map;
     private Map m;
 
      /**
-      * creates a new request package with desired method and ad a description to it
-      * @param method what should server do
-      * @param description a string for logging
+      * creates a new request package maker
       */
-     public RequestPackageMaker(netWorkingParams.RequestPackage.Methods method, String description){
+     public RequestPackageMaker(String description){
         jsonObject= new JSONObject();
-        jsonObject.put(netWorkingParams.RequestPackage.Fields.method,method);
+//        jsonObject.put(netWorkingParams.RequestPackage.Fields.method,method);
         jsonObject.put(netWorkingParams.RequestPackage.Fields.description,description);
         m=new LinkedHashMap();
         setParameters();
     }
 
+    public void creatSignInRequestPackage(String username,String password){
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.SIGN_IN_REQUEST);
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.username,username);
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.password,password);
+    }
 
+    public void creatSignUpRequestPackage(String firstname,String lastname,String username , String password){
+        jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.SIGN_UP_REQUEST);
+        this.putParameter(netWorkingParams.RequestPackage.ParametersFields.username,username);
+        this.putParameter(netWorkingParams.RequestPackage.ParametersFields.password,password);
+        this.putParameter(netWorkingParams.RequestPackage.ParametersFields.firstname,firstname);
+        this.putParameter(netWorkingParams.RequestPackage.ParametersFields.lastname,lastname);
+    }
+    public void createTimelineRequestPackage(){
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.GET_TIMELINE_REQUEST);
+    }
      /**
       * puts a parameter with given name and value in the parameters map
       * @param parameterName name of parameter
