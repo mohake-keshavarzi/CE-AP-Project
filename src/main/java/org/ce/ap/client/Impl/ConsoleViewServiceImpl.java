@@ -43,8 +43,20 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
         printNormal(input,'\n');
     }
 
+    @Override
+    public void printOption(String input) {
+        try {
+            if (input != null)
+                System.out.println(ConsoleColors.WHITE_BACKGROUND_BRIGHT + ConsoleColors.BLACK_BRIGHT + input + ConsoleColors.RESET);
+            else {
+                throw new NullPointerException("Null input to show option text");
+            }
+        }catch (NullPointerException ex){
+            printError(ex.toString());
+        }
+    }
 
-        @Override
+    @Override
     public void printHeading(String input) {
         try {
             if (input != null)
