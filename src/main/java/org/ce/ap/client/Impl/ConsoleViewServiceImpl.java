@@ -47,7 +47,7 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
     public void printOption(String input) {
         try {
             if (input != null)
-                System.out.println(ConsoleColors.WHITE_BACKGROUND_BRIGHT + ConsoleColors.BLACK_BRIGHT + input + ConsoleColors.RESET);
+                System.out.println( ConsoleColors.YELLOW + input + ConsoleColors.RESET);
             else {
                 throw new NullPointerException("Null input to show option text");
             }
