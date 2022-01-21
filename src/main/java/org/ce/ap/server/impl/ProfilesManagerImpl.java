@@ -19,7 +19,7 @@ public class ProfilesManagerImpl implements ProfilesManager{
      * if an instance of this class have been made returns that else makes a new one and returns that
      * @return current instance or newly created instance of this class
      */
-    protected static ProfilesManagerImpl getInstance(){
+    public static ProfilesManagerImpl getInstance(){
         if(INSTANCE==null) {
             INSTANCE=new ProfilesManagerImpl();
         }

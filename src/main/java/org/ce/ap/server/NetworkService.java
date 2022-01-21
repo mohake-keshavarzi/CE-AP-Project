@@ -1,4 +1,7 @@
 package main.java.org.ce.ap.server;
+import main.java.org.ce.ap.server.impl.AuthenticationServiceImpl;
+import main.java.org.ce.ap.server.impl.ProfilesManagerImpl;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -23,7 +26,7 @@ public interface NetworkService {
      * waits for a new client and accept its connection
      * after that creates a new socket and new ClientHandler and runs it in a thread pool
      */
-     void acceptNewClient();
+     void acceptNewClient(ProfilesManagerImpl prf, AuthenticationServiceImpl aut);
 
 
     /**

@@ -57,10 +57,10 @@ public class NetworkServiceImpl implements NetworkService{
      * waits for a new client and accept its connection
      * after that creates a new socket and new ClientHandler and runs it in a thread pool
      */
-    public void acceptNewClient(){
+    public void acceptNewClient(ProfilesManagerImpl prf,AuthenticationServiceImpl aut){
         try {
             Socket connectionSocket = welcomeSocket.accept();
-            clientHandlers.add(new ClientHandler(connectionSocket, UUID.randomUUID().toString()));
+            clientHandlers.add(new ClientHandler(connectionSocket, UUID.randomUUID().toString(),prf,aut));
             pool.execute(clientHandlers.get(clientHandlers.size()-1));
             System.out.println("New Client accepted. Num of clients:"+clientHandlers.size());
         }
