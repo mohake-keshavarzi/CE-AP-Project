@@ -44,10 +44,10 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
     }
 
     @Override
-    public void printOption(String input) {
+    public void printOption(String input,char ending) {
         try {
             if (input != null)
-                System.out.println( ConsoleColors.YELLOW + input + ConsoleColors.RESET);
+                System.out.println( ConsoleColors.YELLOW + input+ ending + ConsoleColors.RESET);
             else {
                 throw new NullPointerException("Null input to show option text");
             }
@@ -55,6 +55,9 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
             printError(ex.toString());
         }
     }
+
+    @Override
+    public void printOption(String input) {printOption(input,'\n');}
 
     @Override
     public void printHeading(String input) {

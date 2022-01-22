@@ -10,6 +10,7 @@ public interface ConsoleViewService {
     void printNormal(String input,char ending);
 
     void printOption(String input);
+    void printOption(String input,char ending);
 
     void printHeading(String input);
 
