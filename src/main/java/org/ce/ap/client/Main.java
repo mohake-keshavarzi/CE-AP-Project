@@ -8,6 +8,7 @@ import main.java.org.ce.ap.server.Profile;
 import main.java.org.ce.ap.server.Tweet;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
@@ -51,10 +52,10 @@ public class Main {
 //        packageMaker.putParameterArray("Likes",in);
 //
 //        System.out.println(packageMaker);
-
+        Scanner scanner=new Scanner(System.in);
         ConnectionServiceImpl network= ConnectionServiceImpl.getInstance();
         network.connectToServer("127.0.0.1",7660);
-        CommandParserServiceImpl commandParserService=CommandParserServiceImpl.getInstance(network);
+        CommandParserServiceImpl commandParserService=CommandParserServiceImpl.getInstance(network,scanner);
         commandParserService.showWelcome();
 
     }

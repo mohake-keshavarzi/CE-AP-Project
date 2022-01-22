@@ -3,6 +3,8 @@ package main.java.org.ce.ap.client;
 
 import org.json.simple.parser.ParseException;
 
+import java.util.Scanner;
+
 public interface CommandParserService {
 
     void showWelcome();

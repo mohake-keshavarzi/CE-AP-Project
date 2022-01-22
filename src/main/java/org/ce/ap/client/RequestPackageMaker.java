@@ -23,22 +23,7 @@ import java.util.Map;
         setParameters();
     }
 
-    public void creatSignInRequestPackage(String username,String password){
-         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.SIGN_IN_REQUEST);
-         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.username,username);
-         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.password,password);
-    }
 
-    public void creatSignUpRequestPackage(String firstname,String lastname,String username , String password){
-        jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.SIGN_UP_REQUEST);
-        this.putParameter(netWorkingParams.RequestPackage.ParametersFields.username,username);
-        this.putParameter(netWorkingParams.RequestPackage.ParametersFields.password,password);
-        this.putParameter(netWorkingParams.RequestPackage.ParametersFields.firstname,firstname);
-        this.putParameter(netWorkingParams.RequestPackage.ParametersFields.lastname,lastname);
-    }
-    public void createTimelineRequestPackage(){
-         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.GET_TIMELINE_REQUEST);
-    }
      /**
       * puts a parameter with given name and value in the parameters map
       * @param parameterName name of parameter
@@ -78,5 +63,24 @@ import java.util.Map;
     }
 
     public String getString(){return jsonObject.toString();}
+
+     public void creatSignInRequestPackage(String username,String password){
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.SIGN_IN_REQUEST);
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.username,username);
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.password,password);
+     }
+
+     public void creatSignUpRequestPackage(String firstname,String lastname,String username , String password){
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.SIGN_UP_REQUEST);
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.username,username);
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.password,password);
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.firstname,firstname);
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.lastname,lastname);
+     }
+
+     public void createTimelineRequestPackage(){
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.GET_TIMELINE_REQUEST);
+     }
+
 
 }
