@@ -15,6 +15,7 @@ import java.net.SocketException;
 public class ClientHandler implements Runnable{
     private Socket connectionSocket;
     private String clientId;
+    private String clientLocalAddress;
     private boolean stopFlag=false;
     private RequestPackageParser requestPackageParser;
     private ResponsePackageMaker responsePackageMaker;
@@ -28,6 +29,7 @@ public class ClientHandler implements Runnable{
      */
     public ClientHandler(Socket connectionSocket, String id,ProfilesManagerImpl prf,AuthenticationServiceImpl aut) {
         this.connectionSocket = connectionSocket;
+        this.clientLocalAddress=connectionSocket.getLocalAddress().toString();
         this.clientId=id;
         this.profilesManager=prf;
         this.authenticationService=aut;
@@ -75,7 +77,7 @@ public class ClientHandler implements Runnable{
             }
         }
         catch (IOException ex){
-            System.out.println("Connection lost with "+clientId+"    "+ex);
+            System.out.println("Connection lost with "+clientLocalAddress+" ID:"+clientId+"    "+ex);
             //ex.printStackTrace();
 
         }
