@@ -1,5 +1,6 @@
 package main.java.org.ce.ap.client;
 
+import main.java.org.ce.ap.server.Profile;
 import main.java.org.ce.ap.server.Tweet;
 
 import java.time.LocalDateTime;
@@ -13,8 +14,10 @@ public class TweetInfo {
     private ProfileInfo sender;
     private LocalDateTime submissionDate;
     private boolean isDeleted;
-    private HashSet<ProfileInfo> likers;
-    private HashSet<TweetInfo>  tweetsWhomHaveRetweetedThisTweet;
+    private HashSet<String> likersUsernames;
+    private HashSet<String>  idOftweetsWhomHaveRetweetedThisTweet;
+    private HashSet<String>  usernameOfWhomHaveRetweetedThisTweet;
+
     private DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
     public TweetInfo(String context,ProfileInfo sender){
         this.sender=sender;
@@ -23,9 +26,24 @@ public class TweetInfo {
         if(context.length()>256)
             throw  new IllegalArgumentException("context should be less than 256 characters");
         this.context=context;
-        likers=new HashSet<>();
-        tweetsWhomHaveRetweetedThisTweet=new HashSet<>();
+        likersUsernames=new HashSet<>();
+        idOftweetsWhomHaveRetweetedThisTweet=new HashSet<>();
+        usernameOfWhomHaveRetweetedThisTweet=new HashSet<>();
         reTweetedTweet=null;
+    }
+    public TweetInfo(String context, ProfileInfo sender, TweetInfo reTweet) throws  IllegalArgumentException{
+        this.sender=sender;
+        if (context==null)
+            context="";
+        else if(context.length()>256)
+            throw new IllegalArgumentException("Tweet context should br less than 256 characters");
+
+        this.context=context;
+        likersUsernames=new HashSet<>();
+        idOftweetsWhomHaveRetweetedThisTweet=new HashSet<>();
+        usernameOfWhomHaveRetweetedThisTweet=new HashSet<>();
+        reTweetedTweet=reTweet;
+        //this.parentTweet=parentTweet;
     }
 
     public void setPublishingDate(String date){
@@ -53,11 +71,11 @@ public class TweetInfo {
     }
 
     public int numOfLikes(){
-        return likers.size();
+        return likersUsernames.size();
     }
 
     public int numOfRetweets(){
-        return tweetsWhomHaveRetweetedThisTweet.size();
+        return idOftweetsWhomHaveRetweetedThisTweet.size();
 
     }
 
@@ -67,5 +85,15 @@ public class TweetInfo {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public void addLiker(String username){
+        likersUsernames.add(username);
+    }
+    public void addReTweeterTweetId(String tweetId){
+        idOftweetsWhomHaveRetweetedThisTweet.add(tweetId);
+    }
+    public void addReTweeterUsername(String username){
+        usernameOfWhomHaveRetweetedThisTweet.add(username);
     }
 }

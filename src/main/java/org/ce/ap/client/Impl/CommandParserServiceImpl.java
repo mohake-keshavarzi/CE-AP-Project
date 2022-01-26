@@ -1,6 +1,8 @@
 package main.java.org.ce.ap.client.Impl;
 
 import main.java.org.ce.ap.client.*;
+import main.java.org.ce.ap.server.Profile;
+import main.java.org.ce.ap.server.Tweet;
 import org.json.simple.parser.ParseException;
 
 import java.util.Scanner;
@@ -169,13 +171,16 @@ public class CommandParserServiceImpl implements CommandParserService{
 
         console.printNormal("Choose your action:");
         console.printOption("1.Post new Tweet");
-        console.printOption("2.Post new reTweet !!!!!!!!!!!!!!!!!!!");
+        console.printOption("2.Post new reTweet");
 
         console.printOption("0.Exit");
         int choice=0;
         choice= scanner.nextInt();
-        if(choice == 1){
+        if(choice == 1) {
             runPostTweetInterface();
+        }
+        else if(choice == 2){
+            runPostReTweetInterface();
         }else {
             System.exit(0);
         }
@@ -198,7 +203,7 @@ public class CommandParserServiceImpl implements CommandParserService{
         try {
             tweet = new TweetInfo(text, loggedInProfileInfo);
             RequestPackageMaker request = new RequestPackageMaker("request to publish new tweet to");
-            request.createPublishNewTweetPackage(tweet, false);
+            request.createPublishNewTweetPackage(tweet);
             tryToSendToServer(request);
             ResponsePackageParser packageParser;
             try {
@@ -238,5 +243,123 @@ public class CommandParserServiceImpl implements CommandParserService{
 
     }
 
+    @Override
+    public void runPostReTweetInterface() {
+        scanner.nextLine();
+        ResponsePackageParser packageParser;
 
+        console.printHeading("New ReTweet");
+        TweetInfo reTweetTarget;
+        TweetInfo myTweet;
+        console.printOption("Enter target tweet's id to retweet:");
+        String targetTweetID = scanner.nextLine();
+        try {
+            reTweetTarget = getTweetFromServerById(targetTweetID);
+            console.printNormal("The tweet which you want to post a retweet about");
+            console.printTweet(reTweetTarget,false);
+
+        }catch (IllegalArgumentException e){
+            console.printError("Error! Please check given tweetId "+ e);
+            return;
+        }
+
+        console.printOption("Enter your review on this tweet (less than 256 characters):");
+        console.printError("Warning: Enter ◙ (alt+10) for end of your text");
+        String text=new String();
+        while (!text.contains("◙")){
+            text += scanner.nextLine()+"\n";
+        }
+        try {
+            myTweet=new TweetInfo(text,loggedInProfileInfo,reTweetTarget);
+            RequestPackageMaker request = new RequestPackageMaker("request to publish new ReTweet");
+            request.createPublishNewReTweetPackage(myTweet);
+            tryToSendToServer(request);
+
+            try {
+                packageParser = new ResponsePackageParser(network.receiveFromServer());
+                System.out.println(packageParser.wasTweetPublishingSuccessful());
+                if (packageParser.hasError()) {
+                    throw new IllegalStateException("Server Error | Error Type:" + packageParser.getErrorType().name() + " | Error Code" + packageParser.getErrorCode().name());
+                }
+                if(packageParser.wasTweetPublishingSuccessful()){
+                    console.printNormal("Preview:");
+                    try {
+                        packageParser.completeTweetInfoData(myTweet);
+                    }catch (Exception ex){
+                        console.printError(ex.toString());
+                    }
+//                    System.out.println("here");
+                    console.printTweet(myTweet,false);
+                    console.printNormal("Your tweet posted successfully");
+                }
+
+
+            }catch (ParseException e){
+                console.printError("Failed to parse response package from server " + e);
+                e.printStackTrace();
+            }
+        }catch (IllegalArgumentException e){
+            console.printError("Error:" + e);
+            return;
+        }
+
+
+
+
+
+    }
+
+    public TweetInfo getTweetFromServerById(String id){
+        RequestPackageMaker request = new RequestPackageMaker("Get tweet by id");
+        request.createGetTweetByIdRequest(id);
+        tryToSendToServer(request);
+        ResponsePackageParser packageParserForTweet;
+        ResponsePackageParser packageParserForTweetSender;
+        ResponsePackageParser packageParserForReTweet;
+        ResponsePackageParser packageParserForReTweetSender;
+
+        ProfileInfo sender;
+        String context;
+        TweetInfo tweet=null;
+        try {
+            packageParserForTweet = new ResponsePackageParser(network.receiveFromServer());
+            if(packageParserForTweet.hasError())
+                throw new IllegalArgumentException("Wrong tweetId :"+packageParserForTweet.getErrorType()+" "+packageParserForTweet.getErrorType());
+            request=new RequestPackageMaker("Get tweet sender's info");
+            request.createGetProfileByUsernameRequest(packageParserForTweet.getTweetSenderUsername());
+            tryToSendToServer(request);
+
+
+            packageParserForTweetSender = new ResponsePackageParser(network.receiveFromServer());
+//            System.out.print("here1");
+            sender=packageParserForTweetSender.getResultProfile();
+            context=packageParserForTweet.getResultTweetContext();
+            if(packageParserForTweet.hasReTweet()){
+                request=new RequestPackageMaker("Get tweet's inner retweet");
+                request.createGetTweetByIdRequest(packageParserForTweet.getReTweetedTweetId());
+                tryToSendToServer(request);
+
+                packageParserForReTweet = new ResponsePackageParser(network.receiveFromServer());
+                request=new RequestPackageMaker("Get retweet sender's info");
+                request.createGetProfileByUsernameRequest(packageParserForReTweet.getTweetSenderUsername());
+                tryToSendToServer(request);
+
+                packageParserForReTweetSender=new ResponsePackageParser(network.receiveFromServer());
+
+                ProfileInfo reTweetSender=packageParserForReTweetSender.getResultProfile();
+                String reTweetContext=packageParserForReTweet.getResultTweetContext();
+                TweetInfo reTweetedTweet=new TweetInfo(reTweetContext,reTweetSender);
+                reTweetedTweet=packageParserForReTweet.completeResultTweetInfo(reTweetedTweet);
+                tweet=new TweetInfo(context,sender,reTweetedTweet);
+            }else {
+                tweet=new TweetInfo(context,sender);
+            }
+            tweet=packageParserForTweet.completeResultTweetInfo(tweet);
+
+        } catch (ParseException e) {
+            console.printError("Failed to parse response package from server " + e);
+            e.printStackTrace();
+        }
+        return tweet;
+    }
 }

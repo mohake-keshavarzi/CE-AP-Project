@@ -48,14 +48,20 @@ public class TweetingServiceImpl implements TweetingService{
         return tweet;
     }
 
-    /**
-     * makes a new tweet with a reTweet from previously published tweets (in this case context could be null)
-     * @param sender profile of who wants to send a tweet
-     * @param context context of tweet
-     * @param reTweet the tweet that is going to be retweeted in this tweet
-     * @return returns the created tweet
-     * @throws IllegalArgumentException if tweet length is not valid
-     */
+    public Tweet publishTweet(Tweet tweet)throws IllegalArgumentException,NullPointerException {
+        tweet.setId(makeTweetId(tweet));
+        allTweets.add(tweet);
+        return tweet;
+    }
+
+        /**
+         * makes a new tweet with a reTweet from previously published tweets (in this case context could be null)
+         * @param sender profile of who wants to send a tweet
+         * @param context context of tweet
+         * @param reTweet the tweet that is going to be retweeted in this tweet
+         * @return returns the created tweet
+         * @throws IllegalArgumentException if tweet length is not valid
+         */
     public Tweet reTweet(Profile sender,String context,Tweet reTweet) throws IllegalArgumentException{
         if(!allTweets.contains(reTweet))
             throw new IllegalArgumentException("No such a tweet found to be retweeted");
@@ -136,4 +142,15 @@ public class TweetingServiceImpl implements TweetingService{
         return tweets;
     }
 
+    @Override
+    public Tweet getTweetById(String id) {
+        Tweet target=null;
+        for (Tweet tweet:allTweets) {
+            if(tweet.getId().equals(id)) {
+                target = tweet;
+                break;
+            }
+        }
+    return target;
+    }
 }

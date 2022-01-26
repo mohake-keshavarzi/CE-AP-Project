@@ -67,5 +67,7 @@ public interface TweetingService {
      */
      ArrayList<Tweet> getAllLikesOfProfile(Profile prf);
 
+     Tweet getTweetById(String id);
+
 
 }

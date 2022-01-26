@@ -16,7 +16,11 @@ public enum netWorkingParams {
             SIGN_IN_REQUEST,
             SIGN_UP_REQUEST,
             SEND_TWEET_REQUEST,
-            GET_TIMELINE_REQUEST
+            SEND_RETWEET_REQUEST,
+
+            GET_TIMELINE_REQUEST,
+            GET_TWEET_BY_ID_REQUEST,
+            GET_PROFILE_BY_USERNAME
         }
 
         public enum ParametersFields {//available parameters to have for request
@@ -25,7 +29,9 @@ public enum netWorkingParams {
             firstname,
             lastname,
             isRetweet,
-            tweetContext
+            tweetContext,
+            tweetId,
+            reTweetId
         }
 
     }
@@ -44,13 +50,16 @@ public enum netWorkingParams {
             public enum ErrorTypes{
                 PACKAGE_ERROR,
                 SIGN_IN_ERROR,
-                TWEETING_ERROR
+                TWEETING_ERROR,
+                PROFILE_DATA_ERROR
             }
             public enum ErrorCodes{
                 UNABLE_TO_PARSE_PACKAGE,
                 INTERNAL_SERVER_ERROR,
                 MORE_THAN_256_CHARS,
-                NULL_CONTEXT
+                NULL_CONTEXT,
+                NO_SUCH_A_TWEET_ID,
+                NO_SUCH_A_USERNAME
             }
 
         }
@@ -68,7 +77,25 @@ public enum netWorkingParams {
                 loggedInBio,     //what is the bio of profile which client has logged in
                 isTweetPostedSuccessfully,
                 tweetSubmissionDate,
-                tweetId
+                tweetId,
+                reTweetedTweetID,
+                tweetContext,
+                tweetSenderUsername,
+                hasRetweet,
+                tweetNumberOfLikes,
+                tweetNumberOfRetweets,
+                tweetLikersUsernamesArray,
+                tweetReTweetersUsernamesArray,
+                tweetReTweetersTweetsIdsArray,
+                profileFirstname,
+                profileLastname,
+                profileUsername,
+                profileBio,
+
+
+
+
+
             }
         }
     }

@@ -94,6 +94,14 @@ public class Tweet {
         return likers.size();
     }
 
+    public HashSet<Profile> getLikers(){
+        return likers;
+    }
+
+    public HashSet<Tweet> getTweetsWhomHaveRetweetedThisTweet() {
+        return tweetsWhomHaveRetweetedThisTweet;
+    }
+
     public boolean didLiked(Profile profile){
         return likers.contains(profile);
     }
@@ -132,9 +140,7 @@ public class Tweet {
         return isDeleted;
     }
 
-    public String uniqueCode(){
-        return submissionDate.toString()+sender.getUsername();
-    }
+
 
     public String getId() {
         return id;
@@ -142,5 +148,9 @@ public class Tweet {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public boolean containsReTweet(){
+        return reTweetedTweet!=null;
     }
 }

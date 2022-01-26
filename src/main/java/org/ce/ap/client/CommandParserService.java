@@ -20,6 +20,11 @@ public interface CommandParserService {
 
     void runPostTweetInterface();
 
+    void runPostReTweetInterface();
+
+     TweetInfo getTweetFromServerById(String id);
+
+
 
 
 

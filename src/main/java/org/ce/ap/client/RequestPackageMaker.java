@@ -82,14 +82,27 @@ import java.util.Map;
          jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.GET_TIMELINE_REQUEST.name());
      }
 
-     public void createPublishNewTweetPackage(TweetInfo tweet,boolean isRetweet){
+     public void createPublishNewTweetPackage(TweetInfo tweet){
          jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.SEND_TWEET_REQUEST.name());
-         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.isRetweet,isRetweet);
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.isRetweet,false);
          this.putParameter(netWorkingParams.RequestPackage.ParametersFields.tweetContext,tweet.getContext());
-         if(isRetweet){
-//             this.putParameter();
-         }
 
+     }
+     public void createPublishNewReTweetPackage(TweetInfo tweet){
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.SEND_RETWEET_REQUEST.name());
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.isRetweet,true);
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.tweetContext,tweet.getContext());
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.reTweetId,tweet.getReTweetedTweet().getId());
+     }
+
+     public void createGetTweetByIdRequest(String id){
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.GET_TWEET_BY_ID_REQUEST.name());
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.tweetId,id);
+     }
+
+     public void createGetProfileByUsernameRequest(String username){
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.GET_PROFILE_BY_USERNAME.name());
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.username,username);
      }
 
 }

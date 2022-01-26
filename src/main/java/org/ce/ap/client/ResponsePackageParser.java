@@ -19,6 +19,11 @@ public class ResponsePackageParser {
     private Long resultsCount;
     private JSONArray resultsArray;
     private JSONArray errorParametersArray;
+    HashMap<String,String> StringResults;
+    HashMap<String,Boolean> BooleanResults;
+    HashMap<String,JSONArray> JSONArrayResults;
+
+
 //    private Map errorParameters;
 
     /**
@@ -28,7 +33,6 @@ public class ResponsePackageParser {
      * @throws ParseException if there was any error parsing package
      */
     public ResponsePackageParser(String inputPackage) throws ParseException {
-
         Object obj = new JSONParser().parse(inputPackage);
         jsonObject = (JSONObject) obj;
 
@@ -52,6 +56,19 @@ public class ResponsePackageParser {
     private void parseStandardPackage(JSONObject object){
         resultsCount=(Long) object.get(netWorkingParams.ResponsePackage.StandardResponsePackage.count.name());
         resultsArray=(JSONArray) object.get(netWorkingParams.ResponsePackage.StandardResponsePackage.results.name());
+        StringResults =
+                new HashMap<>(
+                        (Map<String, String>)
+                                resultsArray.get(0));
+        BooleanResults =
+                new HashMap<>(
+                        (Map<String, Boolean>)
+                                resultsArray.get(0));
+        JSONArrayResults =
+                new HashMap<>(
+                        (Map<String, JSONArray>)
+                                resultsArray.get(0));
+
     }
 
     public boolean hasError(){
@@ -63,48 +80,32 @@ public class ResponsePackageParser {
      * @return true if sign in was successful
      */
     public boolean wasSignInSuccessful(){
-        HashMap<String,Boolean> results =
-                new HashMap<>(
-                (Map<String, Boolean>)
-                        resultsArray.get(0));
-        if(results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed.name())==null)
+
+        if(BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed.name())==null)
             throw new IllegalStateException("This package dose not have Sign in results");
-        return results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed.name());
+        return BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed.name());
     }
 
     public boolean wasSignUpSuccessful(){
-        HashMap<String,Boolean> results =
-                new HashMap<>(
-                        (Map<String, Boolean>)
-                                resultsArray.get(0));
-        if(results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated.name())==null)
+
+        if(BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated.name())==null)
             throw new IllegalStateException("This package dose not have Sign up results");
-        return results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated.name());
+        return BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated.name());
     }
 
     public  boolean wasUsernameDuplicated(){
-        HashMap<String,Boolean> results =
-                new HashMap<>(
-                        (Map<String, Boolean>)
-                                resultsArray.get(0));
-        if(results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isUsernameDuplicated.name())==null)
+
+        if(BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isUsernameDuplicated.name())==null)
             throw new IllegalStateException("This package dose not have Sign up results");
-        return results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isUsernameDuplicated.name());
+        return BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isUsernameDuplicated.name());
 
     }
 
     public ProfileInfo getLoggedInProfileData(){
-        HashMap<String,Boolean> BooleanResults =
-                new HashMap<>(
-                        (Map<String, Boolean>)
-                                resultsArray.get(0));
+
         if(!(BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed.name())!=null || BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated.name())!=null))
             throw new IllegalStateException("This package dose not have Sign in results");
 
-        HashMap<String,String> StringResults =
-                new HashMap<>(
-                        (Map<String, String>)
-                                resultsArray.get(0));
         String firstname=StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInFirstname.name());
         String lastname=StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInLastname.name());
         String username=StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInUsername.name());
@@ -115,26 +116,67 @@ public class ResponsePackageParser {
     }
 
     public boolean wasTweetPublishingSuccessful(){
-        HashMap<String,Boolean> BooleanResults =
-                new HashMap<>(
-                        (Map<String, Boolean>)
-                                resultsArray.get(0));
+
         if(BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isTweetPostedSuccessfully.name())==null)
             throw new IllegalStateException("This package dose not have tweeting service results");
 
         return BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isTweetPostedSuccessfully.name());
     }
     public void completeTweetInfoData(TweetInfo tweetInfo){
-        HashMap<String,String> StringResults =
-                new HashMap<>(
-                        (Map<String, String>)
-                                resultsArray.get(0));
+
         if(StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetSubmissionDate.name())==null)
             throw new IllegalStateException("This package dose not have tweeting service results");
 
           tweetInfo.setPublishingDate(StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetSubmissionDate.name()));
           tweetInfo.setId(StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId.name()));
     }
+
+
+    public String getTweetSenderUsername(){
+        return StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetSenderUsername.name());
+    }
+
+    public ProfileInfo getResultProfile(){
+        String firstname,lastname,username,bio;
+        firstname=StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.profileFirstname.name());
+        lastname=StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.profileLastname.name());
+        username=StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.profileUsername.name());
+        bio=StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.profileBio.name());
+
+        ProfileInfo prf= new ProfileInfo(firstname,lastname,username,bio);
+        return prf;
+    }
+    public boolean hasReTweet(){
+        return BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.hasRetweet.name());
+    }
+    public String getReTweetedTweetId(){
+        return StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.reTweetedTweetID.name());
+    }
+    public String getResultTweetContext(){
+        return StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetContext.name());
+    }
+
+    public TweetInfo completeResultTweetInfo(TweetInfo tweet){
+        tweet.setPublishingDate(StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetSubmissionDate.name()));
+        tweet.setId(StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId.name()));
+        JSONArray likers=(JSONArrayResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetLikersUsernamesArray.name()));
+        JSONArray reTweetIds=(JSONArrayResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetReTweetersTweetsIdsArray.name()));
+        JSONArray reTweetUsernames=(JSONArrayResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetReTweetersUsernamesArray.name()));
+
+        for(Object o:likers){
+            tweet.addLiker((String) o);
+        }
+        for(Object o:reTweetIds){
+            tweet.addReTweeterTweetId((String) o);
+        }
+        for(Object o:reTweetUsernames){
+            tweet.addReTweeterUsername((String) o);
+        }
+
+        return  tweet;
+    }
+
+
 
     public netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes getErrorType() {
         return errorType;
