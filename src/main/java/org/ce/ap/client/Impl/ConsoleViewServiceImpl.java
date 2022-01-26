@@ -144,8 +144,6 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
             System.out.print(ConsoleColors.RESET);
             System.out.println(" id:"+tweet.getReTweetedTweet().getId());
 
-
-
             System.out.print(ConsoleColors.RESET);
             System.out.print(ConsoleColors.GREEN);
             System.out.print("║  ");
