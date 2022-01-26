@@ -57,6 +57,7 @@ public enum netWorkingParams {
             public enum ResultsFields{
                 isAuthenticationSucceed,//if authentication was successful
                 isNewAccountCreated,//weather for authentication used an existing account or created a new one
+                isUsernameDuplicated // weather if username has been used before
             }
         }
     }

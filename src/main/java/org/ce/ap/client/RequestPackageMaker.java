@@ -65,13 +65,13 @@ import java.util.Map;
     public String getString(){return jsonObject.toString();}
 
      public void creatSignInRequestPackage(String username,String password){
-         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.SIGN_IN_REQUEST);
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.SIGN_IN_REQUEST.name());
          this.putParameter(netWorkingParams.RequestPackage.ParametersFields.username,username);
          this.putParameter(netWorkingParams.RequestPackage.ParametersFields.password,password);
      }
 
      public void creatSignUpRequestPackage(String firstname,String lastname,String username , String password){
-         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.SIGN_UP_REQUEST);
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.SIGN_UP_REQUEST.name());
          this.putParameter(netWorkingParams.RequestPackage.ParametersFields.username,username);
          this.putParameter(netWorkingParams.RequestPackage.ParametersFields.password,password);
          this.putParameter(netWorkingParams.RequestPackage.ParametersFields.firstname,firstname);
@@ -79,7 +79,7 @@ import java.util.Map;
      }
 
      public void createTimelineRequestPackage(){
-         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.GET_TIMELINE_REQUEST);
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.GET_TIMELINE_REQUEST.name());
      }
 
 

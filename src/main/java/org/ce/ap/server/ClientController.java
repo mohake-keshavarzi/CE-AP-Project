@@ -46,8 +46,8 @@ public class ClientController {
         }catch (NoSuchAlgorithmException ex){
             responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.SIGN_IN_ERROR,
                     netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.INTERNAL_SERVER_ERROR);
-            responsePackageMaker.addErrorParameter(ex);
-        }catch (IllegalStateException ex){
+            responsePackageMaker.addErrorParameter(ex.toString());
+        }catch (IllegalArgumentException ex){
             responsePackageMaker=makeStandardResponsePackageMaker();
             m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed,false);
             responsePackageMaker.addResult(m);
@@ -71,10 +71,11 @@ public class ClientController {
         }catch (NoSuchAlgorithmException ex){
             responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.SIGN_IN_ERROR,
                     netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.INTERNAL_SERVER_ERROR);
-            responsePackageMaker.addErrorParameter(ex);
-        }catch (IllegalStateException ex){
+            responsePackageMaker.addErrorParameter(ex.toString());
+        }catch (IllegalArgumentException ex){
             responsePackageMaker=makeStandardResponsePackageMaker();
             m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated,false);
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isUsernameDuplicated,true);
             responsePackageMaker.addResult(m);
         }
         return responsePackageMaker;

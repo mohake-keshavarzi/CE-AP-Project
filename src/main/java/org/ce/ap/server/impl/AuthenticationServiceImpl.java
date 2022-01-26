@@ -37,7 +37,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
      * @throws IllegalStateException wrong username or password
      */
     @Override
-    public Profile login(String username, String password) throws NoSuchAlgorithmException,IllegalStateException,NullPointerException{
+    public Profile login(String username, String password) throws NoSuchAlgorithmException,IllegalArgumentException,NullPointerException{
         if(!prfM.checkSimilarUsername(username))
             throw new IllegalArgumentException("No such a username exists");
         Profile prf=prfM.getProfileByUserName(username);

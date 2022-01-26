@@ -149,9 +149,18 @@ public class CommandParserServiceImpl implements CommandParserService{
         ResponsePackageParser packageParser;
         try {
             packageParser = new ResponsePackageParser(network.receiveFromServer());
-
+            if(packageParser.hasError()){
+                throw new IllegalStateException("Server Error | Error Type:"+packageParser.getErrorType().name()+" | Error Code"+packageParser.getErrorCode().name());
+            }
+            if (packageParser.wasSignUpSuccessful()){
+                console.printNormal("Your account successfully created");
+            }else if (packageParser.wasUsernameDuplicated()){
+                console.printError("This username has been already used");
+                throw new IllegalArgumentException("duplicated username");
+            }
         } catch (ParseException e) {
             console.printError("Failed to parse response package from server " + e);
+            e.printStackTrace();
         }
 
     }

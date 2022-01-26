@@ -39,8 +39,8 @@ public class ResponsePackageMaker {
         if(!isErrorPackage) throw new IllegalStateException("It is not an error package");
         if(errorPackageCreated) throw new IllegalStateException("error structure has been created before");
         errorParametersArray=new JSONArray();
-        jsonObject.put(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorType, errorType);
-        jsonObject.put(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorCode, errorCode);
+        jsonObject.put(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorType, errorType.name());
+        jsonObject.put(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorCode, errorCode.name());
         jsonObject.put(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorParameters,errorParametersArray);
         errorPackageCreated=true;
     }
@@ -80,7 +80,7 @@ public class ResponsePackageMaker {
      */
 
     public void addResult(Map m){
-        addResult(m);
+        addResult((Object) m);
     }
 
     /**

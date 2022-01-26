@@ -19,8 +19,8 @@ public class RequestPackageParser {
      */
     public RequestPackageParser(String request) throws ParseException {
         jsonObject=(JSONObject) new JSONParser().parse(request);
-        method=(netWorkingParams.RequestPackage.Methods) jsonObject.get(netWorkingParams.RequestPackage.Fields.method);
-        description=(String) jsonObject.get(netWorkingParams.RequestPackage.Fields.description);
+        method=netWorkingParams.RequestPackage.Methods.valueOf((String)jsonObject.get(netWorkingParams.RequestPackage.Fields.method.name()));
+        description=(String) jsonObject.get(netWorkingParams.RequestPackage.Fields.description.name());
     }
 
     /**
@@ -45,8 +45,8 @@ public class RequestPackageParser {
      * @return the value of that field
      */
     public Object getParameterValue(netWorkingParams.RequestPackage.ParametersFields field){
-        Map m=(Map) jsonObject.get(netWorkingParams.RequestPackage.Fields.parametersValues);
-        return m.get(field);
+        Map m=(Map) jsonObject.get(netWorkingParams.RequestPackage.Fields.parametersValues.name());
+        return m.get(field.name());
     }
 
 

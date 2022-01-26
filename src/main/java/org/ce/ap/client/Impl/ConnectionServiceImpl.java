@@ -55,6 +55,8 @@ public  class ConnectionServiceImpl implements ConnectionService {
         if(socket.isConnected()) {
             try {
                 out.write(input.getBytes());
+                System.out.println("This package sent:");
+                System.out.println(input);
             } catch (IOException ex) {
                 System.err.println("An error occurred during sending data: " + ex);
             }
@@ -73,7 +75,10 @@ public  class ConnectionServiceImpl implements ConnectionService {
         if(socket.isConnected()) {
             try {
                 int read = in.read(buffer);
-                return new String(buffer, 0, read);
+                String result=new String(buffer, 0, read);
+                System.out.println("This package received");
+                System.out.println(result);
+                return result;
             } catch (IOException ex) {
                 System.err.println("An error occurred during sending data: " + ex);
                 return null;

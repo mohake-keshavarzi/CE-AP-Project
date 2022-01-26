@@ -15,7 +15,7 @@ public class ResponsePackageParser {
     private final boolean hasError;
     private netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes errorType;
     private netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes errorCode;
-    private int resultsCount;
+    private Long resultsCount;
     private JSONArray resultsArray;
     private JSONArray errorParametersArray;
 //    private Map errorParameters;
@@ -27,10 +27,12 @@ public class ResponsePackageParser {
      * @throws ParseException if there was any error parsing package
      */
     public ResponsePackageParser(String inputPackage) throws ParseException {
+
         Object obj = new JSONParser().parse(inputPackage);
         jsonObject = (JSONObject) obj;
 
-        hasError=(boolean) jsonObject.get(netWorkingParams.ResponsePackage.hasError);
+        hasError=(boolean) jsonObject.get(netWorkingParams.ResponsePackage.hasError.name());
+//        System.out.println(hasError);
         if(hasError){
             parseErrorPackage(jsonObject);
         }
@@ -41,14 +43,14 @@ public class ResponsePackageParser {
     }
 
     private void parseErrorPackage(JSONObject ErrorObj){
-        errorType=(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes) ErrorObj.get(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorType);
-        errorCode=(netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes) ErrorObj.get(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorCode);
+        errorType=netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.valueOf((String) ErrorObj.get(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorType.name()));
+        errorCode=netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.valueOf((String) ErrorObj.get(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorCode.name()));
         errorParametersArray=(JSONArray) jsonObject.get(netWorkingParams.ResponsePackage.ErrorPackage.Fields.errorParameters);
     }
 
     private void parseStandardPackage(JSONObject object){
-        resultsCount=(int) object.get(netWorkingParams.ResponsePackage.StandardResponsePackage.count);
-        resultsArray=(JSONArray) object.get(netWorkingParams.ResponsePackage.StandardResponsePackage.results);
+        resultsCount=(Long) object.get(netWorkingParams.ResponsePackage.StandardResponsePackage.count.name());
+        resultsArray=(JSONArray) object.get(netWorkingParams.ResponsePackage.StandardResponsePackage.results.name());
     }
 
     public boolean hasError(){
@@ -60,22 +62,41 @@ public class ResponsePackageParser {
      * @return true if sign in was successful
      */
     public boolean wasSignInSuccessful(){
-        HashMap<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields,Boolean> results =
+        HashMap<String,Boolean> results =
                 new HashMap<>(
-                (Map<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields, Boolean>)
+                (Map<String, Boolean>)
                         resultsArray.get(0));
-        if(results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed)==null)
+        if(results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed.name())==null)
             throw new IllegalStateException("This package dose not have Sign in results");
-        return results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed);
+        return results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed.name());
     }
 
     public boolean wasSignUpSuccessful(){
-        HashMap<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields,Boolean> results =
+        HashMap<String,Boolean> results =
                 new HashMap<>(
-                        (Map<netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields, Boolean>)
+                        (Map<String, Boolean>)
                                 resultsArray.get(0));
-        if(results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated)==null)
+        if(results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated.name())==null)
             throw new IllegalStateException("This package dose not have Sign up results");
-        return results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated);
+        return results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated.name());
+    }
+
+    public  boolean wasUsernameDuplicated(){
+        HashMap<String,Boolean> results =
+                new HashMap<>(
+                        (Map<String, Boolean>)
+                                resultsArray.get(0));
+        if(results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isUsernameDuplicated.name())==null)
+            throw new IllegalStateException("This package dose not have Sign up results");
+        return results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isUsernameDuplicated.name());
+
+    }
+
+    public netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes getErrorType() {
+        return errorType;
+    }
+
+    public netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes getErrorCode() {
+        return errorCode;
     }
 }
