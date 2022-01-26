@@ -2,8 +2,10 @@ package main.java.org.ce.ap.server;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.Objects;
 
 public class Tweet {
+    private String id;
     private  String context;
     private boolean isDeleted=false;
     private final LocalDateTime submissionDate;
@@ -105,7 +107,8 @@ public class Tweet {
     }
 
     public LocalDateTime getSubmissionDate() {
-        return submissionDate;
+//        System.out.println(hashCode());
+         return submissionDate;
     }
 
     public String getContext() {
@@ -127,5 +130,17 @@ public class Tweet {
 
     public boolean isDeleted() {
         return isDeleted;
+    }
+
+    public String uniqueCode(){
+        return submissionDate.toString()+sender.getUsername();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

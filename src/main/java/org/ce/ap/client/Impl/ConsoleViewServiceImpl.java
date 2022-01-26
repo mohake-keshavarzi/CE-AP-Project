@@ -107,6 +107,11 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
         ProfileInfo sender=tweet.getSender();
 
         System.out.print(ConsoleColors.WHITE_BRIGHT);
+        System.out.println("▒ id:"+tweet.getId());
+        System.out.print(ConsoleColors.RESET);
+        System.out.print(ConsoleColors.GREEN_BOLD_BRIGHT);
+
+        System.out.print(ConsoleColors.WHITE_BRIGHT);
         System.out.print("▒ ");
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN_BOLD_BRIGHT);

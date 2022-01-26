@@ -4,6 +4,7 @@ import main.java.org.ce.ap.server.Profile;
 import main.java.org.ce.ap.server.Tweet;
 import main.java.org.ce.ap.server.TweetingService;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
@@ -13,6 +14,12 @@ public class TweetingServiceImpl implements TweetingService{
 
     private TweetingServiceImpl(){allTweets= new ArrayList<>();}
 
+    private String makeTweetId(Tweet tweet){
+        int num=getAllTweetsOfProfile(tweet.getSender()).size();
+        num++;
+        String id=tweet.getSubmissionDate()+"num"+num +"@"+tweet.getSender().getUsername();
+        return id;
+    }
     /**
      * Implants singleton for this class.
      * if an instance from this class had been created, returns that
@@ -36,6 +43,7 @@ public class TweetingServiceImpl implements TweetingService{
      */
     public Tweet publishTweet(Profile sender, String context)throws IllegalArgumentException,NullPointerException{
         Tweet tweet=new Tweet(context,sender);
+        tweet.setId(makeTweetId(tweet));
         allTweets.add(tweet);
         return tweet;
     }
@@ -52,6 +60,7 @@ public class TweetingServiceImpl implements TweetingService{
         if(!allTweets.contains(reTweet))
             throw new IllegalArgumentException("No such a tweet found to be retweeted");
         Tweet tweet=new Tweet(context,sender,reTweet);
+        tweet.setId(makeTweetId(tweet));
         allTweets.add(tweet);
         return tweet;
     }

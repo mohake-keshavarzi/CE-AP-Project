@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 
 public class TweetInfo {
+    private String id;
     private String context;
     private TweetInfo reTweetedTweet;
     private ProfileInfo sender;
@@ -58,5 +59,13 @@ public class TweetInfo {
     public int numOfRetweets(){
         return tweetsWhomHaveRetweetedThisTweet.size();
 
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }

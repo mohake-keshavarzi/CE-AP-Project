@@ -67,7 +67,8 @@ public enum netWorkingParams {
                 loggedInLastname,   //what is the lastname of profile which client has logged in
                 loggedInBio,     //what is the bio of profile which client has logged in
                 isTweetPostedSuccessfully,
-                tweetSubmissionDate
+                tweetSubmissionDate,
+                tweetId
             }
         }
     }

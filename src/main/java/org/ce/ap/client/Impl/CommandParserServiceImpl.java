@@ -210,7 +210,7 @@ public class CommandParserServiceImpl implements CommandParserService{
                 if(packageParser.wasTweetPublishingSuccessful()){
                     console.printNormal("Preview:");
                     try {
-                        tweet.setPublishingDate(packageParser.getPostedTweetSubmissionDate());
+                        packageParser.completeTweetInfoData(tweet);
                     }catch (Exception ex){
                         console.printError(ex.toString());
                     }

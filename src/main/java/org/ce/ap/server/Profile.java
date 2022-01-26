@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
 public class Profile {
     private String firstName;
@@ -164,5 +165,18 @@ public class Profile {
 
     public ArrayList<Profile> getListOfFollowers(){
         return new ArrayList<>(followers);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Profile profile = (Profile) o;
+        return username.equals(profile.username) && registerDate.equals(profile.registerDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(username, registerDate);
     }
 }

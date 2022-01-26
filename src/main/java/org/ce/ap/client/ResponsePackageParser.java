@@ -124,7 +124,7 @@ public class ResponsePackageParser {
 
         return BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isTweetPostedSuccessfully.name());
     }
-    public String getPostedTweetSubmissionDate(){
+    public void completeTweetInfoData(TweetInfo tweetInfo){
         HashMap<String,String> StringResults =
                 new HashMap<>(
                         (Map<String, String>)
@@ -132,7 +132,8 @@ public class ResponsePackageParser {
         if(StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetSubmissionDate.name())==null)
             throw new IllegalStateException("This package dose not have tweeting service results");
 
-        return StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetSubmissionDate.name());
+          tweetInfo.setPublishingDate(StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetSubmissionDate.name()));
+          tweetInfo.setId(StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId.name()));
     }
 
     public netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes getErrorType() {

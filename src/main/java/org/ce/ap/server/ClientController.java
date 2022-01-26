@@ -105,7 +105,7 @@ public class ClientController {
             responsePackageMaker=makeStandardResponsePackageMaker();
             m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isTweetPostedSuccessfully,true);
             m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetSubmissionDate,tweet.getSubmissionDate().toString());
-
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId,tweet.getId());
             responsePackageMaker.addResult(m);
         }catch (IllegalArgumentException ex){
             responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.TWEETING_ERROR,
