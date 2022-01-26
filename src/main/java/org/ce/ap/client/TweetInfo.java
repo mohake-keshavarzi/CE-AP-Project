@@ -14,10 +14,16 @@ public class TweetInfo {
     private HashSet<ProfileInfo> likers;
     private HashSet<TweetInfo>  tweetsWhomHaveRetweetedThisTweet;
 
-    public TweetInfo(String context){
+    public TweetInfo(String context,ProfileInfo sender){
+        this.sender=sender;
+        if (context==null)
+            throw new NullPointerException("Context is Null");
         if(context.length()>256)
             throw  new IllegalArgumentException("context should be less than 256 characters");
         this.context=context;
+        likers=new HashSet<>();
+        tweetsWhomHaveRetweetedThisTweet=new HashSet<>();
+        reTweetedTweet=null;
     }
 
 

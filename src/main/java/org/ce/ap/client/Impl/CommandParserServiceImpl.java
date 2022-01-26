@@ -1,8 +1,6 @@
 package main.java.org.ce.ap.client.Impl;
 
-import main.java.org.ce.ap.client.CommandParserService;
-import main.java.org.ce.ap.client.ResponsePackageParser;
-import main.java.org.ce.ap.client.RequestPackageMaker;
+import main.java.org.ce.ap.client.*;
 import org.json.simple.parser.ParseException;
 
 import java.util.Scanner;
@@ -13,6 +11,7 @@ public class CommandParserServiceImpl implements CommandParserService{
     private static ConsoleViewServiceImpl console;
     private ConnectionServiceImpl network;
     private final Scanner scanner;
+    private ProfileInfo loggedInProfileInfo;
     private CommandParserServiceImpl(ConnectionServiceImpl connectionService,Scanner scanner){
         this.scanner=scanner;
         console=ConsoleViewServiceImpl.getInstance();
@@ -55,6 +54,7 @@ public class CommandParserServiceImpl implements CommandParserService{
 
     @Override
     public void runSignInInterface() throws IllegalStateException{
+        scanner.nextLine();
         boolean retry =false;
         console.printHeading("Sign In");
         console.printNormal("Enter your username and password");
@@ -90,8 +90,9 @@ public class CommandParserServiceImpl implements CommandParserService{
         ResponsePackageParser packageParser;
         try {
             packageParser = new ResponsePackageParser(network.receiveFromServer());
-            if (packageParser.wasSignInSuccessful())
+            if (packageParser.wasSignInSuccessful()){
                 console.printNormal("Logged in. WelcomeBack");
+                loggedInProfileInfo =packageParser.getLoggedInProfileData();}
             else {
                 console.printError("Authentication Failed wrong username or password");
                 throw new IllegalArgumentException("Wong username or password");
@@ -99,7 +100,7 @@ public class CommandParserServiceImpl implements CommandParserService{
         }catch (ParseException e){
             console.printError("Failed to parse response package from server "+e);
         }
-
+        showMainMenu();
 
 
     }
@@ -154,6 +155,7 @@ public class CommandParserServiceImpl implements CommandParserService{
             }
             if (packageParser.wasSignUpSuccessful()){
                 console.printNormal("Your account successfully created");
+                loggedInProfileInfo =packageParser.getLoggedInProfileData();
             }else if (packageParser.wasUsernameDuplicated()){
                 console.printError("This username has been already used");
                 throw new IllegalArgumentException("duplicated username");
@@ -162,15 +164,66 @@ public class CommandParserServiceImpl implements CommandParserService{
             console.printError("Failed to parse response package from server " + e);
             e.printStackTrace();
         }
+        showMainMenu();
 
     }
 
     @Override
-    public void showMainMenu(){}
+    public void showMainMenu(){
+        console.printHeading("Main Menu");
+        console.printNormal("Logged in as @"+ loggedInProfileInfo.getUsername());
+        console.printNormal("Name: "+ loggedInProfileInfo.getFirstname()+" "+ loggedInProfileInfo.getLastname());
+        console.printNormal("Bio :"+ loggedInProfileInfo.getBio());
+
+        console.printNormal("--------------------------------------");
+
+        console.printNormal("Choose your action:");
+        console.printOption("1.Post new Tweet");
+        console.printOption("2.Post new reTweet !!!!!!!!!!!!!!!!!!!");
+
+        console.printOption("0.Exit");
+        int choice=0;
+        choice= scanner.nextInt();
+        if(choice == 1){
+            runPostTweetInterface();
+        }else {
+            System.exit(0);
+        }
+
+
+    }
     @Override
     public void showTimeline(){}
     @Override
-    public void runPostTweetInterface(){}
+    public void runPostTweetInterface(){
+        console.printHeading("New Tweet");
+        TweetInfo tweet;
+        console.printOption("Enter yours tweet's text (less than 256 characters):");
+        console.printError("Warning: Enter ◙ (alt+10) for end of your text");
+        String text=new String();
+        while (!text.contains("◙")){
+        text += scanner.nextLine()+"\n";
+        }
+//        System.out.print(text);
+        try {
+            tweet=new TweetInfo(text,loggedInProfileInfo);
+            console.printNormal("Preview:");
+            console.printTweet(tweet,true);
+            console.printNormal("");
+            console.printOption("Do you confirm to send? (y/n)");
+
+
+        }catch (IllegalArgumentException e) {
+            console.printError("Error:" + e);
+            return;
+        }catch (NullPointerException e){
+            console.printError("Error:" + e);
+            return;
+        }finally {
+            showMainMenu();
+        }
+
+    }
 
 
 }

@@ -42,6 +42,11 @@ public class ClientController {
             profile=authenticationService.login(username,password);
             responsePackageMaker=makeStandardResponsePackageMaker();
             m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed,true);
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInFirstname,profile.getFirstName());
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInLastname,profile.getLastName());
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInUsername,profile.getUsername());
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInBio,profile.getBio());
+
             responsePackageMaker.addResult(m);
         }catch (NoSuchAlgorithmException ex){
             responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.SIGN_IN_ERROR,
@@ -67,6 +72,11 @@ public class ClientController {
             profile=authenticationService.creatProfile(firstname,lastname,username,password);
             responsePackageMaker=makeStandardResponsePackageMaker();
             m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated,true);
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInFirstname,profile.getFirstName());
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInLastname,profile.getLastName());
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInUsername,profile.getUsername());
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInBio,profile.getBio());
+
             responsePackageMaker.addResult(m);
         }catch (NoSuchAlgorithmException ex){
             responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.SIGN_IN_ERROR,

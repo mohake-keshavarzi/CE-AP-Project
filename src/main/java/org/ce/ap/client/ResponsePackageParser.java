@@ -92,6 +92,27 @@ public class ResponsePackageParser {
 
     }
 
+    public ProfileInfo getLoggedInProfileData(){
+        HashMap<String,Boolean> BooleanResults =
+                new HashMap<>(
+                        (Map<String, Boolean>)
+                                resultsArray.get(0));
+        if(!(BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed.name())!=null || BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated.name())!=null))
+            throw new IllegalStateException("This package dose not have Sign in results");
+
+        HashMap<String,String> StringResults =
+                new HashMap<>(
+                        (Map<String, String>)
+                                resultsArray.get(0));
+        String firstname=StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInFirstname.name());
+        String lastname=StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInLastname.name());
+        String username=StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInUsername.name());
+        String bio=StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.loggedInBio.name());
+
+        return new ProfileInfo(firstname,lastname,username,bio);
+
+    }
+
     public netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes getErrorType() {
         return errorType;
     }

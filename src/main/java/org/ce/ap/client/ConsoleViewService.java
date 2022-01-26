@@ -16,7 +16,7 @@ public interface ConsoleViewService {
 
     void printError(String input);
 
-    void printTweet(Tweet tweet);
+    void printTweet(TweetInfo tweet,boolean isPreview);
 
 
 }

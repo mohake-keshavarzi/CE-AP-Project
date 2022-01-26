@@ -1,6 +1,8 @@
 package main.java.org.ce.ap.client.Impl;
 
 import main.java.org.ce.ap.client.ConsoleViewService;
+import main.java.org.ce.ap.client.ProfileInfo;
+import main.java.org.ce.ap.client.TweetInfo;
 import main.java.org.ce.ap.server.Tweet;
 import main.java.org.ce.ap.server.Profile;
 
@@ -87,7 +89,7 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
         }
     }
     @Override
-    public void printTweet(Tweet tweet)
+    public void printTweet(TweetInfo tweet,boolean isPreview)
     {
         if(tweet==null){
             try {
@@ -98,21 +100,24 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
             return;
         }
         StringBuffer strBuffer=new StringBuffer(256);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd    HH:mm");
-        Tweet retweet=tweet.getReTweetedTweet();
-        Profile sender=tweet.getSender();
+        DateTimeFormatter formatter=null;
+        if(!isPreview)
+              formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd    HH:mm");
+        TweetInfo retweet=tweet.getReTweetedTweet();
+        ProfileInfo sender=tweet.getSender();
 
         System.out.print(ConsoleColors.WHITE_BRIGHT);
         System.out.print("▒ ");
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN_BOLD_BRIGHT);
-        System.out.print(sender.getFirstName()+" "+sender.getLastName()+"   ");
+        System.out.print(sender.getFirstname()+" "+sender.getLastname()+"   ");
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.WHITE);
         System.out.print("@"+sender.getUsername()+"\t\t\t");
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN);
-        System.out.print(tweet.getSubmissionDate().format(formatter));
+        if (!isPreview)
+            System.out.print(tweet.getSubmissionDate().format(formatter));
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.WHITE);
         if(retweet==null)
@@ -132,13 +137,14 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
             System.out.print("▒ ");
             System.out.print(ConsoleColors.RESET);
             System.out.print(ConsoleColors.PURPLE_BOLD_BRIGHT);
-            System.out.print(sender.getFirstName()+" "+sender.getLastName()+"   ");
+            System.out.print(sender.getFirstname()+" "+sender.getLastname()+"   ");
             System.out.print(ConsoleColors.RESET);
             System.out.print(ConsoleColors.WHITE);
             System.out.print("@"+sender.getUsername()+"\t\t\t");
             System.out.print(ConsoleColors.RESET);
             System.out.print(ConsoleColors.PURPLE);
-            System.out.print(tweet.getSubmissionDate().format(formatter));
+            if (!isPreview)
+                System.out.print(tweet.getSubmissionDate().format(formatter));
             System.out.print(ConsoleColors.RESET);
             System.out.print(ConsoleColors.WHITE);
             System.out.println("  Tweeted:");
@@ -236,7 +242,7 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
         System.out.print("╚═══════════");
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN_BRIGHT);
-        System.out.print("Retweets:"+tweet.numOfRetweeters());
+        System.out.print("Retweets:"+tweet.numOfRetweets());
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN);
         System.out.print("═════");
