@@ -111,6 +111,7 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN_BOLD_BRIGHT);
 
+
         System.out.print(ConsoleColors.WHITE_BRIGHT);
         System.out.print("▒ ");
         System.out.print(ConsoleColors.RESET);
@@ -135,6 +136,15 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
 
         // print retweet if exists
         if(retweet!= null){
+            System.out.print(ConsoleColors.RESET);
+            System.out.print(ConsoleColors.GREEN);
+            System.out.print("║  ");
+            System.out.print(ConsoleColors.WHITE);
+            System.out.print("▒ ");
+            System.out.print(ConsoleColors.RESET);
+            System.out.println(" id:"+tweet.getReTweetedTweet().getId());
+
+
             System.out.print(ConsoleColors.RESET);
             System.out.print(ConsoleColors.GREEN);
             System.out.print("║  ");

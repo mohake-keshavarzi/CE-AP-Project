@@ -172,6 +172,8 @@ public class CommandParserServiceImpl implements CommandParserService{
         console.printNormal("Choose your action:");
         console.printOption("1.Post new Tweet");
         console.printOption("2.Post new reTweet");
+        console.printOption("3.View Tweet by its Id");
+
 
         console.printOption("0.Exit");
         int choice=0;
@@ -181,7 +183,11 @@ public class CommandParserServiceImpl implements CommandParserService{
         }
         else if(choice == 2){
             runPostReTweetInterface();
-        }else {
+        }
+        else if(choice == 3){
+            viewTweetById();
+        }
+        else {
             System.exit(0);
         }
 
@@ -301,11 +307,35 @@ public class CommandParserServiceImpl implements CommandParserService{
         }catch (IllegalArgumentException e){
             console.printError("Error:" + e);
             return;
+        }finally {
+            showMainMenu();
         }
 
 
 
 
+
+    }
+
+    public void viewTweetById(){
+        scanner.nextLine();
+        ResponsePackageParser packageParser;
+
+        console.printHeading("View tweet");
+        TweetInfo targetTweet;
+        console.printOption("Enter target tweet's id to observe:");
+        String targetTweetID = scanner.nextLine();
+        try {
+            targetTweet = getTweetFromServerById(targetTweetID);
+            console.printNormal("The tweet which you want to post a retweet about");
+            console.printTweet(targetTweet,false);
+
+        }catch (IllegalArgumentException e){
+            console.printError("Error! Please check given tweetId "+ e);
+            return;
+        }finally {
+            showMainMenu();
+        }
 
     }
 
