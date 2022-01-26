@@ -29,7 +29,23 @@ public class CommandParserServiceImpl implements CommandParserService{
         return INSTANCE;
     }
 
+    private void tryToSendToServer(RequestPackageMaker request){
+        boolean retry=false;
+        do {
+            try {
+                network.sendToServer(request.getString());
+            } catch (IllegalStateException ex) {
+                console.printError(ex + " Connection to the server lost.");
+                console.printNormal("Do you want to retry?(y/n)");
+                retry = scanner.nextLine().equals("y");
+                if (!retry){
+                    console.printError("Failed to Login");
+                    throw new IllegalStateException("failed to connect. no connection");
+                }
+            }
+        }while (retry);
 
+    }
     @Override
     public void showWelcome(){
         console.printHeading("Welcome");
@@ -74,19 +90,7 @@ public class CommandParserServiceImpl implements CommandParserService{
         request.creatSignInRequestPackage(username,password);
         console.printNormal("Connecting to @"+username+" ...");
         console.printNormal("Logging in ...");
-        do {
-            try {
-                network.sendToServer(request.getString());
-            } catch (IllegalStateException ex) {
-                console.printError(ex + " Connection to the server lost.");
-                console.printNormal("Do you want to retry?(y/n)");
-                retry = scanner.nextLine().equals("y");
-                if (!retry){
-                    console.printError("Failed to Login");
-                    throw new IllegalStateException("failed to connect. no connection");
-                }
-            }
-        }while (retry);
+        tryToSendToServer(request);
         ResponsePackageParser packageParser;
         try {
             packageParser = new ResponsePackageParser(network.receiveFromServer());
@@ -132,21 +136,7 @@ public class CommandParserServiceImpl implements CommandParserService{
         RequestPackageMaker request = new RequestPackageMaker("creat a new account with username: @" + username);
         request.creatSignUpRequestPackage(firstname, lastname, username, password);
         console.printNormal("Sending your request to the server...");
-        boolean retry = false;
-        do {
-            try {
-                network.sendToServer(request.getString());
-            } catch (IllegalStateException ex) {
-                console.printError(ex + " Connection to the server lost.");
-                console.printNormal("Do you want to retry?(y/n)");
-                retry = scanner.nextLine().equals("y");
-                if (!retry) {
-                    console.printError("Failed to send the request");
-                    throw new IllegalStateException("failed to connect. no connection");
-                }
-            }
-        } while (retry);
-
+        tryToSendToServer(request);
         ResponsePackageParser packageParser;
         try {
             packageParser = new ResponsePackageParser(network.receiveFromServer());
@@ -206,14 +196,37 @@ public class CommandParserServiceImpl implements CommandParserService{
         }
 //        System.out.print(text);
         try {
-            tweet=new TweetInfo(text,loggedInProfileInfo);
-            console.printNormal("Preview:");
-            console.printTweet(tweet,true);
-            console.printNormal("");
-            console.printOption("Do you confirm to send? (y/n)");
+            tweet = new TweetInfo(text, loggedInProfileInfo);
+            RequestPackageMaker request = new RequestPackageMaker("request to publish new tweet to");
+            request.createPublishNewTweetPackage(tweet, false);
+            tryToSendToServer(request);
+            ResponsePackageParser packageParser;
+            try {
+                packageParser = new ResponsePackageParser(network.receiveFromServer());
+                System.out.println(packageParser.wasTweetPublishingSuccessful());
+                if (packageParser.hasError()) {
+                    throw new IllegalStateException("Server Error | Error Type:" + packageParser.getErrorType().name() + " | Error Code" + packageParser.getErrorCode().name());
+                }
+                if(packageParser.wasTweetPublishingSuccessful()){
+                    console.printNormal("Preview:");
+                    try {
+                        tweet.setPublishingDate(packageParser.getPostedTweetSubmissionDate());
+                    }catch (Exception ex){
+                        console.printError(ex.toString());
+                    }
+//                    System.out.println("here");
+                    console.printTweet(tweet,false);
+                    console.printNormal("Your tweet posted successfully");
+                }
 
 
-        }catch (IllegalArgumentException e) {
+            } catch (ParseException e) {
+                console.printError("Failed to parse response package from server " + e);
+                e.printStackTrace();
+            }
+
+
+        } catch (IllegalArgumentException e) {
             console.printError("Error:" + e);
             return;
         }catch (NullPointerException e){

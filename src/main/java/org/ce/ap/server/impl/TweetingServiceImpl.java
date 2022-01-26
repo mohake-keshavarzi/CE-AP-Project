@@ -19,7 +19,7 @@ public class TweetingServiceImpl implements TweetingService{
      * else creates a new instance and returns that
      * @return returns the previously created or newly created instance.
      */
-    protected static TweetingServiceImpl getInstance(){
+    public static TweetingServiceImpl getInstance(){
         if(INSTANCE==null) {
             INSTANCE=new TweetingServiceImpl();
         }

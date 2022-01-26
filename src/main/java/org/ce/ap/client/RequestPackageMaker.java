@@ -82,5 +82,14 @@ import java.util.Map;
          jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.GET_TIMELINE_REQUEST.name());
      }
 
+     public void createPublishNewTweetPackage(TweetInfo tweet,boolean isRetweet){
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.SEND_TWEET_REQUEST.name());
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.isRetweet,isRetweet);
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.tweetContext,tweet.getContext());
+         if(isRetweet){
+//             this.putParameter();
+         }
+
+     }
 
 }

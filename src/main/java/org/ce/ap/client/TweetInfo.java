@@ -3,6 +3,7 @@ package main.java.org.ce.ap.client;
 import main.java.org.ce.ap.server.Tweet;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashSet;
 
 public class TweetInfo {
@@ -13,7 +14,7 @@ public class TweetInfo {
     private boolean isDeleted;
     private HashSet<ProfileInfo> likers;
     private HashSet<TweetInfo>  tweetsWhomHaveRetweetedThisTweet;
-
+    private DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
     public TweetInfo(String context,ProfileInfo sender){
         this.sender=sender;
         if (context==null)
@@ -26,6 +27,9 @@ public class TweetInfo {
         reTweetedTweet=null;
     }
 
+    public void setPublishingDate(String date){
+        submissionDate= LocalDateTime.parse(date,formatter);
+    }
 
     public TweetInfo getReTweetedTweet() {
         return reTweetedTweet;

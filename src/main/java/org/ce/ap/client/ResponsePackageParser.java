@@ -6,6 +6,7 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import main.java.org.ce.ap.netWorkingParams;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -111,6 +112,27 @@ public class ResponsePackageParser {
 
         return new ProfileInfo(firstname,lastname,username,bio);
 
+    }
+
+    public boolean wasTweetPublishingSuccessful(){
+        HashMap<String,Boolean> BooleanResults =
+                new HashMap<>(
+                        (Map<String, Boolean>)
+                                resultsArray.get(0));
+        if(BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isTweetPostedSuccessfully.name())==null)
+            throw new IllegalStateException("This package dose not have tweeting service results");
+
+        return BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isTweetPostedSuccessfully.name());
+    }
+    public String getPostedTweetSubmissionDate(){
+        HashMap<String,String> StringResults =
+                new HashMap<>(
+                        (Map<String, String>)
+                                resultsArray.get(0));
+        if(StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetSubmissionDate.name())==null)
+            throw new IllegalStateException("This package dose not have tweeting service results");
+
+        return StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetSubmissionDate.name());
     }
 
     public netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes getErrorType() {

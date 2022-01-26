@@ -4,6 +4,7 @@ import main.java.org.ce.ap.netWorkingParams;
 import main.java.org.ce.ap.server.impl.AuthenticationServiceImpl;
 import main.java.org.ce.ap.server.impl.NetworkServiceImpl;
 import main.java.org.ce.ap.server.impl.ProfilesManagerImpl;
+import main.java.org.ce.ap.server.impl.TweetingServiceImpl;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -21,18 +22,20 @@ public class ClientHandler implements Runnable{
     private ResponsePackageMaker responsePackageMaker;
     private ProfilesManagerImpl profilesManager;
     private AuthenticationServiceImpl authenticationService;
+    private TweetingServiceImpl tweetingService;
 
     /**
      * makes a new client handler
      * @param connectionSocket the socket which client will communicate with
      * @param id the id of this client
      */
-    public ClientHandler(Socket connectionSocket, String id,ProfilesManagerImpl prf,AuthenticationServiceImpl aut) {
+    public ClientHandler(Socket connectionSocket, String id,ProfilesManagerImpl prf,AuthenticationServiceImpl aut,TweetingServiceImpl twtS) {
         this.connectionSocket = connectionSocket;
         this.clientLocalAddress=connectionSocket.getLocalAddress().toString();
         this.clientId=id;
         this.profilesManager=prf;
         this.authenticationService=aut;
+        this.tweetingService=twtS;
         System.out.println("New client. id="+this.clientId);
     }
 
@@ -48,7 +51,7 @@ public class ClientHandler implements Runnable{
             OutputStream out = connectionSocket.getOutputStream();
             InputStream in = connectionSocket.getInputStream();
             byte[] buffer = new byte[2048];
-            ClientController clientController =new ClientController(profilesManager,authenticationService);
+            ClientController clientController =new ClientController(profilesManager,authenticationService,tweetingService);
             while (!stopFlag){
 
                 int read=in.read(buffer);

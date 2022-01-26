@@ -23,8 +23,9 @@ public enum netWorkingParams {
             password,
             username,
             firstname,
-            lastname
-
+            lastname,
+            isRetweet,
+            tweetContext
         }
 
     }
@@ -42,11 +43,14 @@ public enum netWorkingParams {
             }
             public enum ErrorTypes{
                 PACKAGE_ERROR,
-                SIGN_IN_ERROR
+                SIGN_IN_ERROR,
+                TWEETING_ERROR
             }
             public enum ErrorCodes{
                 UNABLE_TO_PARSE_PACKAGE,
-                INTERNAL_SERVER_ERROR
+                INTERNAL_SERVER_ERROR,
+                MORE_THAN_256_CHARS,
+                NULL_CONTEXT
             }
 
         }
@@ -61,7 +65,9 @@ public enum netWorkingParams {
                 loggedInUsername, //what is the username of profile which client has logged in
                 loggedInFirstname,   //what is the firstname of profile which client has logged in
                 loggedInLastname,   //what is the lastname of profile which client has logged in
-                loggedInBio     //what is the bio of profile which client has logged in
+                loggedInBio,     //what is the bio of profile which client has logged in
+                isTweetPostedSuccessfully,
+                tweetSubmissionDate
             }
         }
     }

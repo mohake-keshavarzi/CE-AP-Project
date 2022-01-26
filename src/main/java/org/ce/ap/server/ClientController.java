@@ -3,7 +3,7 @@ package main.java.org.ce.ap.server;
 
 import main.java.org.ce.ap.server.impl.AuthenticationServiceImpl;
 import main.java.org.ce.ap.server.impl.ProfilesManagerImpl;
-import org.json.simple.parser.ParseException;
+import main.java.org.ce.ap.server.impl.TweetingServiceImpl;
 import main.java.org.ce.ap.netWorkingParams;
 
 import java.security.NoSuchAlgorithmException;
@@ -17,18 +17,22 @@ public class ClientController {
     private ResponsePackageMaker responsePackageMaker;
     private ProfilesManagerImpl profilesManager;
     private AuthenticationServiceImpl authenticationService;
+    private TweetingServiceImpl tweetingService;
 
-    public ClientController(ProfilesManagerImpl profilesManager, AuthenticationServiceImpl authenticationService){
+    public ClientController(ProfilesManagerImpl profilesManager, AuthenticationServiceImpl authenticationService,TweetingServiceImpl tweetingService){
         this.profilesManager=profilesManager;
         this.authenticationService=authenticationService;
+        this.tweetingService=tweetingService;
 
     }
     public String doTaskAndCreateResponse(RequestPackageParser input){
         this.inputParser=input;
-        if (inputParser.getMethod()== netWorkingParams.RequestPackage.Methods.SIGN_IN_REQUEST){
+        if (inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.SIGN_IN_REQUEST)){
             responsePackageMaker =doSignIn();
-        }else if(inputParser.getMethod()==netWorkingParams.RequestPackage.Methods.SIGN_UP_REQUEST){
+        }else if(inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.SIGN_UP_REQUEST)){
             responsePackageMaker =doSignUp();
+        }else if(inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.SEND_TWEET_REQUEST)){
+            responsePackageMaker = doSendTweet();
         }
         return responsePackageMaker.getPackage();
     }
@@ -91,7 +95,30 @@ public class ClientController {
         return responsePackageMaker;
     }
 
+    private ResponsePackageMaker doSendTweet(){
+        boolean isRetweet = (boolean) inputParser.getParameterValue(netWorkingParams.RequestPackage.ParametersFields.isRetweet);
+        String context=(String) inputParser.getParameterValue(netWorkingParams.RequestPackage.ParametersFields.tweetContext);
+        ResponsePackageMaker responsePackageMaker;
+        Map m=new LinkedHashMap();
+        try {
+            Tweet tweet=tweetingService.publishTweet(profile,context);
+            responsePackageMaker=makeStandardResponsePackageMaker();
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isTweetPostedSuccessfully,true);
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetSubmissionDate,tweet.getSubmissionDate().toString());
 
+            responsePackageMaker.addResult(m);
+        }catch (IllegalArgumentException ex){
+            responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.TWEETING_ERROR,
+                    netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.MORE_THAN_256_CHARS);
+            responsePackageMaker.addErrorParameter(ex.toString());
+        }catch (NullPointerException ex){
+            responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.TWEETING_ERROR,
+                    netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.NULL_CONTEXT);
+            responsePackageMaker.addErrorParameter(ex.toString());
+        }
+
+        return responsePackageMaker;
+    }
 
 
     private ResponsePackageMaker makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes errorType
