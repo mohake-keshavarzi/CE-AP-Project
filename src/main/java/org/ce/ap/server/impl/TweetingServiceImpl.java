@@ -91,13 +91,17 @@ public class TweetingServiceImpl implements TweetingService{
      * @param profile profile of who wants to like
      * @param tweet the tweet to be liked
      * @throws NoSuchElementException if given tweet not exists
+     *
      */
-    public void likeTweet(Profile profile ,Tweet tweet ) throws NoSuchElementException{
+    public void likeTweet(Profile profile ,Tweet tweet ) throws NoSuchElementException,IllegalArgumentException{
         if(!allTweets.contains(tweet))
             throw new NoSuchElementException("There isn't such a tweet");
         if(!tweet.didLiked(profile)){
             tweet.addLike(profile);
+        }else{
+            throw new IllegalArgumentException("This profile have been liked this tweet before");
         }
+
     }
 
     /**

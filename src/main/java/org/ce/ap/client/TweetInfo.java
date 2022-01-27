@@ -18,6 +18,7 @@ public class TweetInfo {
     private HashSet<String>  idOftweetsWhomHaveRetweetedThisTweet;
     private HashSet<String>  usernameOfWhomHaveRetweetedThisTweet;
 
+
     private DateTimeFormatter formatter = DateTimeFormatter.ISO_DATE_TIME;
     public TweetInfo(String context,ProfileInfo sender){
         this.sender=sender;
@@ -95,5 +96,17 @@ public class TweetInfo {
     }
     public void addReTweeterUsername(String username){
         usernameOfWhomHaveRetweetedThisTweet.add(username);
+    }
+
+    public HashSet<String> getIdOftweetsWhomHaveRetweetedThisTweet() {
+        return idOftweetsWhomHaveRetweetedThisTweet;
+    }
+
+    public HashSet<String> getLikersUsernames() {
+        return likersUsernames;
+    }
+
+    public HashSet<String> getUsernameOfWhomHaveRetweetedThisTweet() {
+        return usernameOfWhomHaveRetweetedThisTweet;
     }
 }

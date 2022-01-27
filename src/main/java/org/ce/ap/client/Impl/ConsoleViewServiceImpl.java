@@ -89,7 +89,7 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
         }
     }
     @Override
-    public void printTweet(TweetInfo tweet,boolean isPreview)
+    public void printTweet(TweetInfo tweet)
     {
         if(tweet==null){
             try {
@@ -101,7 +101,7 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
         }
         StringBuffer strBuffer=new StringBuffer(256);
         DateTimeFormatter formatter=null;
-        if(!isPreview)
+//        if(!isPreview)
               formatter = DateTimeFormatter.ofPattern("yyyy/MM/dd    HH:mm");
         TweetInfo retweet=tweet.getReTweetedTweet();
         ProfileInfo sender=tweet.getSender();
@@ -122,7 +122,7 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
         System.out.print("@"+sender.getUsername()+"\t\t\t");
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN);
-        if (!isPreview)
+//        if (!isPreview)
             System.out.print(tweet.getSubmissionDate().format(formatter));
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.WHITE);
@@ -151,14 +151,14 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
             System.out.print("▒ ");
             System.out.print(ConsoleColors.RESET);
             System.out.print(ConsoleColors.PURPLE_BOLD_BRIGHT);
-            System.out.print(sender.getFirstname()+" "+sender.getLastname()+"   ");
+            System.out.print(retweet.getSender().getFirstname()+" "+retweet.getSender().getLastname()+"   ");
             System.out.print(ConsoleColors.RESET);
             System.out.print(ConsoleColors.WHITE);
-            System.out.print("@"+sender.getUsername()+"\t\t\t");
+            System.out.print("@"+retweet.getSender().getUsername()+"\t\t\t");
             System.out.print(ConsoleColors.RESET);
             System.out.print(ConsoleColors.PURPLE);
-            if (!isPreview)
-                System.out.print(tweet.getSubmissionDate().format(formatter));
+//            if (!isPreview)
+                System.out.print(retweet.getSubmissionDate().format(formatter));
             System.out.print(ConsoleColors.RESET);
             System.out.print(ConsoleColors.WHITE);
             System.out.println("  Tweeted:");

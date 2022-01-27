@@ -20,7 +20,8 @@ public enum netWorkingParams {
 
             GET_TIMELINE_REQUEST,
             GET_TWEET_BY_ID_REQUEST,
-            GET_PROFILE_BY_USERNAME
+            GET_PROFILE_BY_USERNAME_REQUEST,
+            LIKE_TWEET_BY_ID_REQUEST
         }
 
         public enum ParametersFields {//available parameters to have for request
@@ -51,7 +52,8 @@ public enum netWorkingParams {
                 PACKAGE_ERROR,
                 SIGN_IN_ERROR,
                 TWEETING_ERROR,
-                PROFILE_DATA_ERROR
+                PROFILE_DATA_ERROR,
+                LIKING_ERROR
             }
             public enum ErrorCodes{
                 UNABLE_TO_PARSE_PACKAGE,
@@ -59,7 +61,8 @@ public enum netWorkingParams {
                 MORE_THAN_256_CHARS,
                 NULL_CONTEXT,
                 NO_SUCH_A_TWEET_ID,
-                NO_SUCH_A_USERNAME
+                NO_SUCH_A_USERNAME,
+                LIKE_OWN_TWEET
             }
 
         }
@@ -71,6 +74,7 @@ public enum netWorkingParams {
                 isAuthenticationSucceed,//if authentication was successful
                 isNewAccountCreated,//weather for authentication used an existing account or created a new one
                 isUsernameDuplicated, // weather if username has been used before
+                isLikingSuccessful,
                 loggedInUsername, //what is the username of profile which client has logged in
                 loggedInFirstname,   //what is the firstname of profile which client has logged in
                 loggedInLastname,   //what is the lastname of profile which client has logged in

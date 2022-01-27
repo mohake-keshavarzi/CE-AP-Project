@@ -1,10 +1,10 @@
 package main.java.org.ce.ap.client.Impl;
 
 import main.java.org.ce.ap.client.*;
-import main.java.org.ce.ap.server.Profile;
 import main.java.org.ce.ap.server.Tweet;
 import org.json.simple.parser.ParseException;
 
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 public class CommandParserServiceImpl implements CommandParserService{
@@ -173,6 +173,7 @@ public class CommandParserServiceImpl implements CommandParserService{
         console.printOption("1.Post new Tweet");
         console.printOption("2.Post new reTweet");
         console.printOption("3.View Tweet by its Id");
+        console.printOption("4.Like Tweet by its Id");
 
 
         console.printOption("0.Exit");
@@ -185,13 +186,23 @@ public class CommandParserServiceImpl implements CommandParserService{
             runPostReTweetInterface();
         }
         else if(choice == 3){
-            viewTweetById();
+            runViewTweetByIdInterface();
+        }else if(choice==4){
+            runLikeTweetByIdInterface();
         }
         else {
             System.exit(0);
         }
 
 
+    }
+    private String get256CharText(){
+        console.printError("Warning: Enter ◙ (alt+10) for end of your text");
+        String text=new String();
+        while (!text.contains("◙")){
+            text += scanner.nextLine()+"\n";
+        }
+        return text;
     }
     @Override
     public void showTimeline(){}
@@ -200,11 +211,7 @@ public class CommandParserServiceImpl implements CommandParserService{
         console.printHeading("New Tweet");
         TweetInfo tweet;
         console.printOption("Enter yours tweet's text (less than 256 characters):");
-        console.printError("Warning: Enter ◙ (alt+10) for end of your text");
-        String text=new String();
-        while (!text.contains("◙")){
-        text += scanner.nextLine()+"\n";
-        }
+        String text=get256CharText();
 //        System.out.print(text);
         try {
             tweet = new TweetInfo(text, loggedInProfileInfo);
@@ -226,7 +233,7 @@ public class CommandParserServiceImpl implements CommandParserService{
                         console.printError(ex.toString());
                     }
 //                    System.out.println("here");
-                    console.printTweet(tweet,false);
+                    console.printTweet(tweet);
                     console.printNormal("Your tweet posted successfully");
                 }
 
@@ -262,7 +269,7 @@ public class CommandParserServiceImpl implements CommandParserService{
         try {
             reTweetTarget = getTweetFromServerById(targetTweetID);
             console.printNormal("The tweet which you want to post a retweet about");
-            console.printTweet(reTweetTarget,false);
+            console.printTweet(reTweetTarget);
 
         }catch (IllegalArgumentException e){
             console.printError("Error! Please check given tweetId "+ e);
@@ -270,11 +277,7 @@ public class CommandParserServiceImpl implements CommandParserService{
         }
 
         console.printOption("Enter your review on this tweet (less than 256 characters):");
-        console.printError("Warning: Enter ◙ (alt+10) for end of your text");
-        String text=new String();
-        while (!text.contains("◙")){
-            text += scanner.nextLine()+"\n";
-        }
+        String text=get256CharText();
         try {
             myTweet=new TweetInfo(text,loggedInProfileInfo,reTweetTarget);
             RequestPackageMaker request = new RequestPackageMaker("request to publish new ReTweet");
@@ -295,7 +298,7 @@ public class CommandParserServiceImpl implements CommandParserService{
                         console.printError(ex.toString());
                     }
 //                    System.out.println("here");
-                    console.printTweet(myTweet,false);
+                    console.printTweet(myTweet);
                     console.printNormal("Your tweet posted successfully");
                 }
 
@@ -310,14 +313,42 @@ public class CommandParserServiceImpl implements CommandParserService{
         }finally {
             showMainMenu();
         }
-
-
-
-
-
     }
 
-    public void viewTweetById(){
+    public void creatRetweetByTargetIdRequest(String  id,String context){
+        ResponsePackageParser packageParser;
+        TweetInfo target;
+        try {
+            target = getTweetFromServerById(id);
+            try {
+                TweetInfo myTweet = new TweetInfo(context, loggedInProfileInfo, target);
+                RequestPackageMaker request = new RequestPackageMaker("request to publish new ReTweet");
+                request.createPublishNewReTweetPackage(myTweet);
+                tryToSendToServer(request);
+                try {
+                    packageParser = new ResponsePackageParser(network.receiveFromServer());
+                    System.out.println(packageParser.wasTweetPublishingSuccessful());
+                    if (packageParser.hasError()) {
+                        throw new IllegalStateException("Server Error | Error Type:" + packageParser.getErrorType().name() + " | Error Code" + packageParser.getErrorCode().name());
+                    }
+                    if (packageParser.wasTweetPublishingSuccessful()) {
+                        console.printNormal("Your retweet posted successfully");
+                    }
+                } catch (ParseException e) {
+                    console.printError("Failed to parse response package from server " + e);
+                    e.printStackTrace();
+                }
+
+            } catch (IllegalArgumentException e) {
+                console.printError("Error:Invalid Context" + e);
+                return;
+            }
+        }catch (IllegalArgumentException e){
+            console.printError("Invalid tweet id "+e);
+        }
+    }
+
+    public void runViewTweetByIdInterface(){
         scanner.nextLine();
         ResponsePackageParser packageParser;
 
@@ -325,10 +356,46 @@ public class CommandParserServiceImpl implements CommandParserService{
         TweetInfo targetTweet;
         console.printOption("Enter target tweet's id to observe:");
         String targetTweetID = scanner.nextLine();
+        String choice="1";
+
         try {
-            targetTweet = getTweetFromServerById(targetTweetID);
-            console.printNormal("The tweet which you want to post a retweet about");
-            console.printTweet(targetTweet,false);
+            while (choice!="0") {
+                targetTweet = getTweetFromServerById(targetTweetID);
+                console.printNormal("Tweet you wanted to observe:");
+                console.printTweet(targetTweet);
+                console.printNormal("Choose your next Action");
+                console.printOption("1.View Likes");
+                console.printOption("2.View usernames of whom have retweeted this");
+                console.printOption("3.View retweets on this tweet");
+                console.printOption("4.Like this Tweet");
+                console.printOption("5.Write retweet on this tweet");
+                console.printOption("0.Back");
+                choice = scanner.nextLine();
+                if (choice.equals("1")) {
+                    for (String s : targetTweet.getLikersUsernames()) {
+                        console.printNormal("@" + s);
+                    }
+
+                } else if (choice.equals("2")) {
+                    for (String s : targetTweet.getUsernameOfWhomHaveRetweetedThisTweet()) {
+                        console.printNormal("@" + s);
+                    }
+                } else if (choice.equals("3")) {
+                    for (String s : targetTweet.getIdOftweetsWhomHaveRetweetedThisTweet()) {
+                        console.printTweet(getTweetFromServerById(s));
+                    }
+                } else if (choice.equals("4")) {
+                    likeTweetById(targetTweet.getId());
+                } else if (choice.equals("5")) {
+                    String text = get256CharText();
+                    creatRetweetByTargetIdRequest(targetTweet.getId(), text);
+                } else {
+                    break;
+                }
+                console.printOption("write something to continue...");
+                scanner.nextLine();
+            }
+
 
         }catch (IllegalArgumentException e){
             console.printError("Error! Please check given tweetId "+ e);
@@ -391,5 +458,38 @@ public class CommandParserServiceImpl implements CommandParserService{
             e.printStackTrace();
         }
         return tweet;
+    }
+
+
+    public void likeTweetById(String id){
+        RequestPackageMaker request = new RequestPackageMaker("Like tweet by id");
+        request.createLikeByIdRequest(id);
+        tryToSendToServer(request);
+        ResponsePackageParser responsePackage;
+        try {
+            responsePackage=new ResponsePackageParser(network.receiveFromServer());
+            try {
+                 if(responsePackage.likedSuccessfully()){
+                     console.printNormal("Tweet (id:"+responsePackage.getResultTweetId()+") liked successfully");
+                 }else{
+                     console.printError("You Have been liked this tweet before");
+                 }
+
+            }catch (NoSuchElementException e) {
+                console.printError("Id dose not exists");
+            }
+        }catch (ParseException e) {
+            console.printError("Failed to parse response package from server " + e);
+            e.printStackTrace();
+        }
+
+    }
+
+    public void runLikeTweetByIdInterface(){
+        console.printOption("Enter id of tweet you want to like:");
+        scanner.nextLine();
+        String id=scanner.nextLine();
+        likeTweetById(id);
+        showMainMenu();
     }
 }

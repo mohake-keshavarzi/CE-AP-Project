@@ -9,6 +9,7 @@ import main.java.org.ce.ap.netWorkingParams;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class ResponsePackageParser {
 
@@ -176,8 +177,19 @@ public class ResponsePackageParser {
         return  tweet;
     }
 
+    public boolean likedSuccessfully(){
+        if(hasError){
+            if(errorCode== netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.NO_SUCH_A_TWEET_ID){
+                throw new NoSuchElementException("Id dose not exists");
+            }
+        }
 
+        return BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isLikingSuccessful.name());
+    }
 
+    public String getResultTweetId(){
+        return StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId.name());
+    }
     public netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes getErrorType() {
         return errorType;
     }
@@ -185,4 +197,6 @@ public class ResponsePackageParser {
     public netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes getErrorCode() {
         return errorCode;
     }
+
+
 }

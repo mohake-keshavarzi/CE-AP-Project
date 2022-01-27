@@ -10,6 +10,7 @@ import org.json.simple.JSONArray;
 import java.security.NoSuchAlgorithmException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class ClientController {
     private String inputString;
@@ -36,13 +37,17 @@ public class ClientController {
             responsePackageMaker = doSendTweet();
         }else if(inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.GET_TWEET_BY_ID_REQUEST)){
             responsePackageMaker= getTweetById();
-        }else if(inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.GET_PROFILE_BY_USERNAME)){
+        }else if(inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.GET_PROFILE_BY_USERNAME_REQUEST)){
             responsePackageMaker= getProfileByUsername();
         }else if(inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.SEND_RETWEET_REQUEST)){
             responsePackageMaker = doSendTweet();
+        }else if(inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.LIKE_TWEET_BY_ID_REQUEST)){
+            responsePackageMaker = doLikeTweetById();
         }
         return responsePackageMaker.getPackage();
     }
+
+
 
     private ResponsePackageMaker doSignIn(){
         String username=(String) inputParser.getParameterValue(netWorkingParams.RequestPackage.ParametersFields.username);
@@ -179,6 +184,39 @@ public class ClientController {
 
         }
         return responsePackageMaker;
+    }
+
+    private ResponsePackageMaker doLikeTweetById() {
+        String id=(String) inputParser.getParameterValue(netWorkingParams.RequestPackage.ParametersFields.tweetId);
+        Tweet target=tweetingService.getTweetById(id);
+        ResponsePackageMaker responsePackageMaker;
+        Map m=new LinkedHashMap();
+
+        if(target==null){
+            responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.LIKING_ERROR,
+                    netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.NO_SUCH_A_TWEET_ID);
+        }
+        try {
+
+            tweetingService.likeTweet(profile,target);
+            responsePackageMaker=makeStandardResponsePackageMaker();
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isLikingSuccessful,true);
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId,target.getId());
+            responsePackageMaker.addResult(m);
+
+        }catch (NoSuchElementException ex){
+            responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.LIKING_ERROR,
+                    netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.NO_SUCH_A_TWEET_ID);
+        }catch (IllegalArgumentException ex){
+            responsePackageMaker=makeStandardResponsePackageMaker();
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isLikingSuccessful,false);
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId,target.getId());
+            responsePackageMaker.addResult(m);
+
+        }
+
+        return responsePackageMaker;
+
     }
 
     private ResponsePackageMaker getProfileByUsername() {

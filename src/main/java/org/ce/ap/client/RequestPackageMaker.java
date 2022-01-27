@@ -101,8 +101,13 @@ import java.util.Map;
      }
 
      public void createGetProfileByUsernameRequest(String username){
-         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.GET_PROFILE_BY_USERNAME.name());
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.GET_PROFILE_BY_USERNAME_REQUEST.name());
          this.putParameter(netWorkingParams.RequestPackage.ParametersFields.username,username);
+     }
+
+     public void createLikeByIdRequest(String id){
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.LIKE_TWEET_BY_ID_REQUEST.name());
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.tweetId,id);
      }
 
 }
