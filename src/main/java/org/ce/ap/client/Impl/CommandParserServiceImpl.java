@@ -1,7 +1,6 @@
 package main.java.org.ce.ap.client.Impl;
 
 import main.java.org.ce.ap.client.*;
-import main.java.org.ce.ap.server.Tweet;
 import org.json.simple.parser.ParseException;
 
 import java.util.NoSuchElementException;
@@ -361,13 +360,17 @@ public class CommandParserServiceImpl implements CommandParserService{
         try {
             while (choice!="0") {
                 targetTweet = getTweetFromServerById(targetTweetID);
+                boolean isLikedByThisProfile =targetTweet.getLikersUsernames().contains(loggedInProfileInfo.getUsername());
                 console.printNormal("Tweet you wanted to observe:");
                 console.printTweet(targetTweet);
                 console.printNormal("Choose your next Action");
                 console.printOption("1.View Likes");
                 console.printOption("2.View usernames of whom have retweeted this");
                 console.printOption("3.View retweets on this tweet");
-                console.printOption("4.Like this Tweet");
+                if(!isLikedByThisProfile)
+                    console.printOption("4.Like this Tweet");
+                else
+                    console.printOption("4.UnLike this Tweet");
                 console.printOption("5.Write retweet on this tweet");
                 console.printOption("0.Back");
                 choice = scanner.nextLine();
@@ -385,7 +388,10 @@ public class CommandParserServiceImpl implements CommandParserService{
                         console.printTweet(getTweetFromServerById(s));
                     }
                 } else if (choice.equals("4")) {
-                    likeTweetById(targetTweet.getId());
+                    if(!isLikedByThisProfile)
+                        likeTweetById(targetTweet.getId());
+                    else
+                        unlikeTweetById(targetTweet.getId());
                 } else if (choice.equals("5")) {
                     String text = get256CharText();
                     creatRetweetByTargetIdRequest(targetTweet.getId(), text);
@@ -484,6 +490,30 @@ public class CommandParserServiceImpl implements CommandParserService{
         }
 
     }
+    public void unlikeTweetById(String id){
+        RequestPackageMaker request = new RequestPackageMaker("UnLike tweet by id");
+        request.createUnLikeByIdRequest(id);
+        tryToSendToServer(request);
+        ResponsePackageParser responsePackage;
+        try {
+            responsePackage=new ResponsePackageParser(network.receiveFromServer());
+            try {
+                if(responsePackage.likedSuccessfully()){
+                    console.printNormal("Tweet (id:"+responsePackage.getResultTweetId()+") unliked successfully");
+                }else{
+                    console.printError("You Have not been liked this tweet before");
+                }
+
+            }catch (NoSuchElementException e) {
+                console.printError("Id dose not exists");
+            }
+        }catch (ParseException e) {
+            console.printError("Failed to parse response package from server " + e);
+            e.printStackTrace();
+        }
+
+    }
+
 
     public void runLikeTweetByIdInterface(){
         console.printOption("Enter id of tweet you want to like:");

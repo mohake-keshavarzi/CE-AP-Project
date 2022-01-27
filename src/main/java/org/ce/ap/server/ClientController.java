@@ -43,7 +43,10 @@ public class ClientController {
             responsePackageMaker = doSendTweet();
         }else if(inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.LIKE_TWEET_BY_ID_REQUEST)){
             responsePackageMaker = doLikeTweetById();
+        }else if(inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.UNLIKE_TWEET_BY_ID_REQUEST)){
+            responsePackageMaker = doUnLikeTweetById();
         }
+
         return responsePackageMaker.getPackage();
     }
 
@@ -199,6 +202,39 @@ public class ClientController {
         try {
 
             tweetingService.likeTweet(profile,target);
+            responsePackageMaker=makeStandardResponsePackageMaker();
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isLikingSuccessful,true);
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId,target.getId());
+            responsePackageMaker.addResult(m);
+
+        }catch (NoSuchElementException ex){
+            responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.LIKING_ERROR,
+                    netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.NO_SUCH_A_TWEET_ID);
+        }catch (IllegalArgumentException ex){
+            responsePackageMaker=makeStandardResponsePackageMaker();
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isLikingSuccessful,false);
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId,target.getId());
+            responsePackageMaker.addResult(m);
+
+        }
+
+        return responsePackageMaker;
+
+    }
+
+    private ResponsePackageMaker doUnLikeTweetById() {
+        String id=(String) inputParser.getParameterValue(netWorkingParams.RequestPackage.ParametersFields.tweetId);
+        Tweet target=tweetingService.getTweetById(id);
+        ResponsePackageMaker responsePackageMaker;
+        Map m=new LinkedHashMap();
+
+        if(target==null){
+            responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.LIKING_ERROR,
+                    netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.NO_SUCH_A_TWEET_ID);
+        }
+        try {
+
+            tweetingService.unLikeTweet(profile,target);
             responsePackageMaker=makeStandardResponsePackageMaker();
             m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isLikingSuccessful,true);
             m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId,target.getId());

@@ -109,5 +109,8 @@ import java.util.Map;
          jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.LIKE_TWEET_BY_ID_REQUEST.name());
          this.putParameter(netWorkingParams.RequestPackage.ParametersFields.tweetId,id);
      }
-
+     public void createUnLikeByIdRequest(String id){
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.UNLIKE_TWEET_BY_ID_REQUEST.name());
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.tweetId,id);
+     }
 }

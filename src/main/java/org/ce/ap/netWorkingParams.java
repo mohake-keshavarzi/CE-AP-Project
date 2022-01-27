@@ -21,7 +21,9 @@ public enum netWorkingParams {
             GET_TIMELINE_REQUEST,
             GET_TWEET_BY_ID_REQUEST,
             GET_PROFILE_BY_USERNAME_REQUEST,
-            LIKE_TWEET_BY_ID_REQUEST
+            LIKE_TWEET_BY_ID_REQUEST,
+            UNLIKE_TWEET_BY_ID_REQUEST,
+
         }
 
         public enum ParametersFields {//available parameters to have for request
@@ -62,7 +64,8 @@ public enum netWorkingParams {
                 NULL_CONTEXT,
                 NO_SUCH_A_TWEET_ID,
                 NO_SUCH_A_USERNAME,
-                LIKE_OWN_TWEET
+                LIKE_OWN_TWEET,
+
             }
 
         }
