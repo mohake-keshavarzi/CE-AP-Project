@@ -7,9 +7,7 @@ import org.json.simple.parser.ParseException;
 import main.java.org.ce.ap.netWorkingParams;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class ResponsePackageParser {
 
@@ -102,7 +100,7 @@ public class ResponsePackageParser {
 
     }
 
-    public ProfileInfo getLoggedInProfileData(){
+    public ProfileInfo getLoggedInProfileBasicData(){
 
         if(!(BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isAuthenticationSucceed.name())!=null || BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isNewAccountCreated.name())!=null))
             throw new IllegalStateException("This package dose not have Sign in results");
@@ -187,9 +185,62 @@ public class ResponsePackageParser {
         return BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isLikingSuccessful.name());
     }
 
+    public boolean UnLikedSuccessfully(){
+        if(hasError){
+            if(errorCode== netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.NO_SUCH_A_TWEET_ID){
+                throw new NoSuchElementException("Id dose not exists");
+            }
+        }
+
+        return BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isUnLikingSuccessful.name());
+    }
+
+    public boolean followedSuccessfully(){
+        if(hasError){
+            if(errorCode== netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.USERNAME_NOT_FOUND){
+                throw new NoSuchElementException("Username dose not exists");
+            }else if (errorCode== netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.SELF_FOLLOWING)
+                throw new IllegalArgumentException("You can't follow yourself");
+
+        }
+
+        return BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isFollowingSuccessful.name());
+    }
+
+    public boolean unFollowedSuccessfully(){
+        if(hasError){
+            if(errorCode== netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.USERNAME_NOT_FOUND){
+                throw new NoSuchElementException("Username dose not exists");
+            }else if (errorCode== netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.SELF_UNFOLLOWING)
+                throw new IllegalArgumentException("You can't unfollow yourself");
+
+        }
+
+        return BooleanResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isUnFollowingSuccessful.name());
+    }
+
     public String getResultTweetId(){
         return StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId.name());
     }
+
+    public String getResultProfileUsername(){
+        return StringResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.profileUsername.name());
+    }
+
+    public ArrayList<String> getTimeLineResults(){
+        JSONArray jsonArray= JSONArrayResults.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetIdAndProfileUsernamePairArray.name());
+        ArrayList<String> tp=new ArrayList<>();
+        for(Object eachSel: jsonArray){
+            HashMap<String,String> results=(HashMap<String,String>)eachSel;
+            String tweetId=(String) results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId.name());
+//            String profileUsername=(String) results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.profileUsername.name());
+//            Boolean isOwner =(Boolean) results.get(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isTweetOwner.name());
+            tp.add(tweetId);
+        }
+        return tp;
+    }
+
+
     public netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes getErrorType() {
         return errorType;
     }
@@ -197,6 +248,7 @@ public class ResponsePackageParser {
     public netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes getErrorCode() {
         return errorCode;
     }
+
 
 
 }

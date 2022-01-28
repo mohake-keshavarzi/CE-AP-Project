@@ -113,4 +113,14 @@ import java.util.Map;
          jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.UNLIKE_TWEET_BY_ID_REQUEST.name());
          this.putParameter(netWorkingParams.RequestPackage.ParametersFields.tweetId,id);
      }
+     public void creatFollowProfileByUsernameRequest(String username){
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.FOLLOW_PROFILE_BY_USERNAME.name());
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.username,username);
+     }
+
+     public void creatUnFollowProfileByUsernameRequest(String username){
+         jsonObject.put(netWorkingParams.RequestPackage.Fields.method,netWorkingParams.RequestPackage.Methods.UNFOLLOW_PROFILE_BY_USERNAME.name());
+         this.putParameter(netWorkingParams.RequestPackage.ParametersFields.username,username);
+     }
+
 }

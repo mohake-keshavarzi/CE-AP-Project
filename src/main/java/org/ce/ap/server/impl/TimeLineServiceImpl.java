@@ -1,12 +1,11 @@
 package main.java.org.ce.ap.server.impl;
 
-import main.java.org.ce.ap.server.Profile;
-import main.java.org.ce.ap.server.TimeLineService;
-import main.java.org.ce.ap.server.Tweet;
-import main.java.org.ce.ap.server.TweetingService;
+import main.java.org.ce.ap.server.*;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
 
 public class TimeLineServiceImpl implements TimeLineService {
     private static TimeLineServiceImpl INSTANCE;
@@ -21,7 +20,7 @@ public class TimeLineServiceImpl implements TimeLineService {
      * if an instance of this class have been made returns that else makes a new one and returns that
      * @return current instance or newly created instance of this class
      */
-    protected static TimeLineServiceImpl getInstance(){
+    public static TimeLineServiceImpl getInstance(){
         if(INSTANCE==null) {
             INSTANCE = new TimeLineServiceImpl(TweetingServiceImpl.getInstance());
         }
@@ -48,6 +47,7 @@ public class TimeLineServiceImpl implements TimeLineService {
      */
     public ArrayList<Tweet> returnAllFollowingsLikes(Profile profile){
         ArrayList<Tweet> tweets=new ArrayList<>();
+
         for (Profile prf:profile.getListOfFollowings()) {
             tweets.addAll(TS.getAllLikesOfProfile(prf));
         }
@@ -57,13 +57,16 @@ public class TimeLineServiceImpl implements TimeLineService {
     /**
      * returns whole published tweets of given profile's followings(It contains retweets) also
      * whole tweets which given profile's followings has liked in order of submission date
+     * but removes duplications
      * @param profile given profile
      * @return believe me. it returns all of them!!!!!!!!!!
      */
     public ArrayList<Tweet> returnTimeline(Profile profile){
-        ArrayList<Tweet> tweets=new ArrayList<>();
-        tweets.addAll(returnAllFollowingsLikes(profile));
-        tweets.addAll(returnAllFollowingsTweets(profile));
+        HashSet<Tweet> tweetHashSet=new HashSet<>();
+        tweetHashSet.addAll(returnAllFollowingsTweets(profile));
+        tweetHashSet.addAll(returnAllFollowingsLikes(profile));
+//        tweetsAndProfiles.addAll(returnAllFollowingsLikes(profile));
+        ArrayList<Tweet> tweets=new ArrayList<>(tweetHashSet);
         tweets.sort(Comparator.comparing(Tweet::getSubmissionDate)); //https://stackoverflow.com/questions/2784514/sort-arraylist-of-custom-objects-by-property
         return tweets;
     }

@@ -23,6 +23,9 @@ public enum netWorkingParams {
             GET_PROFILE_BY_USERNAME_REQUEST,
             LIKE_TWEET_BY_ID_REQUEST,
             UNLIKE_TWEET_BY_ID_REQUEST,
+            FOLLOW_PROFILE_BY_USERNAME,
+            UNFOLLOW_PROFILE_BY_USERNAME,
+
 
         }
 
@@ -34,7 +37,8 @@ public enum netWorkingParams {
             isRetweet,
             tweetContext,
             tweetId,
-            reTweetId
+            reTweetId,
+
         }
 
     }
@@ -55,7 +59,8 @@ public enum netWorkingParams {
                 SIGN_IN_ERROR,
                 TWEETING_ERROR,
                 PROFILE_DATA_ERROR,
-                LIKING_ERROR
+                LIKING_ERROR,
+                OBSERVING_ERROR,
             }
             public enum ErrorCodes{
                 UNABLE_TO_PARSE_PACKAGE,
@@ -65,6 +70,10 @@ public enum netWorkingParams {
                 NO_SUCH_A_TWEET_ID,
                 NO_SUCH_A_USERNAME,
                 LIKE_OWN_TWEET,
+                SELF_FOLLOWING,
+                SELF_UNFOLLOWING,
+
+                USERNAME_NOT_FOUND
 
             }
 
@@ -78,6 +87,8 @@ public enum netWorkingParams {
                 isNewAccountCreated,//weather for authentication used an existing account or created a new one
                 isUsernameDuplicated, // weather if username has been used before
                 isLikingSuccessful,
+                isUnLikingSuccessful,
+
                 loggedInUsername, //what is the username of profile which client has logged in
                 loggedInFirstname,   //what is the firstname of profile which client has logged in
                 loggedInLastname,   //what is the lastname of profile which client has logged in
@@ -98,12 +109,17 @@ public enum netWorkingParams {
                 profileLastname,
                 profileUsername,
                 profileBio,
+                isFollowingSuccessful,
+                isUnFollowingSuccessful,
+                isTweetOwner,
+                tweetIdAndProfileUsernamePairArray
 
 
 
 
 
-            }
+
+                }
         }
     }
 

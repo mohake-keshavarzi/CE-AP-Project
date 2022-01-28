@@ -3,6 +3,7 @@ package main.java.org.ce.ap.client.Impl;
 import main.java.org.ce.ap.client.*;
 import org.json.simple.parser.ParseException;
 
+import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 
@@ -97,7 +98,7 @@ public class CommandParserServiceImpl implements CommandParserService{
             packageParser = new ResponsePackageParser(network.receiveFromServer());
             if (packageParser.wasSignInSuccessful()){
                 console.printNormal("Logged in. WelcomeBack");
-                loggedInProfileInfo =packageParser.getLoggedInProfileData();}
+                loggedInProfileInfo =packageParser.getLoggedInProfileBasicData();}
             else {
                 console.printError("Authentication Failed wrong username or password");
                 throw new IllegalArgumentException("Wong username or password");
@@ -146,7 +147,7 @@ public class CommandParserServiceImpl implements CommandParserService{
             }
             if (packageParser.wasSignUpSuccessful()){
                 console.printNormal("Your account successfully created");
-                loggedInProfileInfo =packageParser.getLoggedInProfileData();
+                loggedInProfileInfo =packageParser.getLoggedInProfileBasicData();
             }else if (packageParser.wasUsernameDuplicated()){
                 console.printError("This username has been already used");
                 throw new IllegalArgumentException("duplicated username");
@@ -173,6 +174,10 @@ public class CommandParserServiceImpl implements CommandParserService{
         console.printOption("2.Post new reTweet");
         console.printOption("3.View Tweet by its Id");
         console.printOption("4.Like Tweet by its Id");
+        console.printOption("5.Follow Profile by its username");
+        console.printOption("6.UnFollow Profile by its username");
+
+        console.printOption("7.Get TimeLine");
 
 
         console.printOption("0.Exit");
@@ -188,6 +193,13 @@ public class CommandParserServiceImpl implements CommandParserService{
             runViewTweetByIdInterface();
         }else if(choice==4){
             runLikeTweetByIdInterface();
+        }else if(choice==5){
+            runFollowByUsernameInterface();
+        }else if(choice==6){
+            runUnFollowByUsernameInterface();
+        }
+        else if(choice==7){
+            showTimeline();
         }
         else {
             System.exit(0);
@@ -204,7 +216,36 @@ public class CommandParserServiceImpl implements CommandParserService{
         return text;
     }
     @Override
-    public void showTimeline(){}
+    public void showTimeline(){
+        scanner.nextLine();
+        ResponsePackageParser responsePackage;
+        console.printHeading("View TimeLine");
+        RequestPackageMaker request=new RequestPackageMaker("Get Timeline");
+        request.createTimelineRequestPackage();
+        tryToSendToServer(request);
+        try {
+            responsePackage=new ResponsePackageParser(network.receiveFromServer());
+            ArrayList<String> tIdArray;
+            tIdArray=responsePackage.getTimeLineResults();
+            for (String tId:tIdArray) {
+                TweetInfo tweetInfo;
+                try {
+                    tweetInfo = getTweetFromServerById(tId);
+                    console.printTweet(tweetInfo,loggedInProfileInfo.getUsername());
+//                    if(tweetInfo.getSender().getUsername())
+                } catch (Exception e) {
+                    console.printError("Something went wrong.  " + e.getMessage());
+                }
+
+            }
+
+        }catch (ParseException e) {
+            console.printError("Failed to parse response package from server " + e);
+            e.printStackTrace();
+        }finally {
+            showMainMenu();
+        }
+    }
     @Override
     public void runPostTweetInterface(){
         console.printHeading("New Tweet");
@@ -362,7 +403,7 @@ public class CommandParserServiceImpl implements CommandParserService{
                 targetTweet = getTweetFromServerById(targetTweetID);
                 boolean isLikedByThisProfile =targetTweet.getLikersUsernames().contains(loggedInProfileInfo.getUsername());
                 console.printNormal("Tweet you wanted to observe:");
-                console.printTweet(targetTweet);
+                console.printTweet(targetTweet,loggedInProfileInfo.getUsername());
                 console.printNormal("Choose your next Action");
                 console.printOption("1.View Likes");
                 console.printOption("2.View usernames of whom have retweeted this");
@@ -385,7 +426,7 @@ public class CommandParserServiceImpl implements CommandParserService{
                     }
                 } else if (choice.equals("3")) {
                     for (String s : targetTweet.getIdOftweetsWhomHaveRetweetedThisTweet()) {
-                        console.printTweet(getTweetFromServerById(s));
+                        console.printTweet(getTweetFromServerById(s),loggedInProfileInfo.getUsername());
                     }
                 } else if (choice.equals("4")) {
                     if(!isLikedByThisProfile)
@@ -498,7 +539,7 @@ public class CommandParserServiceImpl implements CommandParserService{
         try {
             responsePackage=new ResponsePackageParser(network.receiveFromServer());
             try {
-                if(responsePackage.likedSuccessfully()){
+                if(responsePackage.UnLikedSuccessfully()){
                     console.printNormal("Tweet (id:"+responsePackage.getResultTweetId()+") unliked successfully");
                 }else{
                     console.printError("You Have not been liked this tweet before");
@@ -521,5 +562,62 @@ public class CommandParserServiceImpl implements CommandParserService{
         String id=scanner.nextLine();
         likeTweetById(id);
         showMainMenu();
+    }
+
+    public void runFollowByUsernameInterface(){
+        console.printOption("Enter username of profile you want to follow:");
+        scanner.nextLine();
+        String username=scanner.nextLine();
+        followProfileByUsername(username);
+        showMainMenu();
+    }
+    public void runUnFollowByUsernameInterface(){
+        console.printOption("Enter username of profile you want to unfollow:");
+        scanner.nextLine();
+        String username=scanner.nextLine();
+        unFollowProfileByUsername(username);
+        showMainMenu();
+    }
+
+    public void followProfileByUsername(String username){
+        RequestPackageMaker request = new RequestPackageMaker("follow given username's account");
+        request.creatFollowProfileByUsernameRequest(username);
+        tryToSendToServer(request);
+        ResponsePackageParser responsePackage;
+        try {
+            responsePackage=new ResponsePackageParser(network.receiveFromServer());
+            try {
+                if(responsePackage.followedSuccessfully()){
+                    console.printNormal("You followed "+responsePackage.getResultProfileUsername()+" successfully");
+                }
+
+            }catch (NoSuchElementException | IllegalArgumentException e) {
+                console.printError(e.getMessage());
+            }
+        }catch (ParseException e) {
+            console.printError("Failed to parse response package from server " + e);
+            e.printStackTrace();
+        }
+    }
+
+    public void unFollowProfileByUsername(String username){
+        RequestPackageMaker request = new RequestPackageMaker("unfollow given username's account");
+        request.creatUnFollowProfileByUsernameRequest(username);
+        tryToSendToServer(request);
+        ResponsePackageParser responsePackage;
+        try {
+            responsePackage=new ResponsePackageParser(network.receiveFromServer());
+            try {
+                if(responsePackage.unFollowedSuccessfully()){
+                    console.printNormal("You unfollowed "+responsePackage.getResultProfileUsername()+" successfully");
+                }
+
+            }catch (NoSuchElementException | IllegalArgumentException e) {
+                console.printError(e.getMessage());
+            }
+        }catch (ParseException e) {
+            console.printError("Failed to parse response package from server " + e);
+            e.printStackTrace();
+        }
     }
 }

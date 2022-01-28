@@ -88,8 +88,8 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
             printError(ex.toString());
         }
     }
-    @Override
-    public void printTweet(TweetInfo tweet)
+
+    public void printTweet(TweetInfo tweet,String viewerUsername)
     {
         if(tweet==null){
             try {
@@ -263,6 +263,10 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN_BRIGHT);
         System.out.print("Likes:"+tweet.numOfLikes());
+        if(viewerUsername!=null)
+            if(tweet.getLikersUsernames().contains(viewerUsername))
+                System.out.print("  ♥");
+
         System.out.print(ConsoleColors.RESET);
         System.out.print(ConsoleColors.GREEN);
         System.out.println("══════════════════════");
@@ -270,7 +274,10 @@ public class ConsoleViewServiceImpl implements ConsoleViewService {
         System.out.println(ConsoleColors.RESET);
     }
 
-
+    @Override
+    public void printTweet(TweetInfo tweet) {
+        printTweet(tweet,null);
+    }
 
     //https://stackoverflow.com/a/45444716
     protected class ConsoleColors {

@@ -3,11 +3,13 @@ package main.java.org.ce.ap.server;
 
 import main.java.org.ce.ap.server.impl.AuthenticationServiceImpl;
 import main.java.org.ce.ap.server.impl.ProfilesManagerImpl;
+import main.java.org.ce.ap.server.impl.TimeLineServiceImpl;
 import main.java.org.ce.ap.server.impl.TweetingServiceImpl;
 import main.java.org.ce.ap.netWorkingParams;
 import org.json.simple.JSONArray;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -20,11 +22,16 @@ public class ClientController {
     private ProfilesManagerImpl profilesManager;
     private AuthenticationServiceImpl authenticationService;
     private TweetingServiceImpl tweetingService;
+    private ObserverService observerService;
+    private TimeLineServiceImpl timeLineService;
 
-    public ClientController(ProfilesManagerImpl profilesManager, AuthenticationServiceImpl authenticationService,TweetingServiceImpl tweetingService){
+    public ClientController(ProfilesManagerImpl profilesManager, AuthenticationServiceImpl authenticationService,
+                            TweetingServiceImpl tweetingService,ObserverService observerService,TimeLineServiceImpl timeLineService){
         this.profilesManager=profilesManager;
         this.authenticationService=authenticationService;
         this.tweetingService=tweetingService;
+        this.observerService=observerService;
+        this.timeLineService=timeLineService;
 
     }
     public String doTaskAndCreateResponse(RequestPackageParser input){
@@ -45,6 +52,12 @@ public class ClientController {
             responsePackageMaker = doLikeTweetById();
         }else if(inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.UNLIKE_TWEET_BY_ID_REQUEST)){
             responsePackageMaker = doUnLikeTweetById();
+        }else if(inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.FOLLOW_PROFILE_BY_USERNAME)){
+            responsePackageMaker = doFollowProfileByUsername();
+        }else if(inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.UNFOLLOW_PROFILE_BY_USERNAME)){
+            responsePackageMaker = doUnFollowProfileByUsername();
+        }else if(inputParser.getMethod().equals(netWorkingParams.RequestPackage.Methods.GET_TIMELINE_REQUEST)){
+            responsePackageMaker = doTimeLine();
         }
 
         return responsePackageMaker.getPackage();
@@ -236,7 +249,7 @@ public class ClientController {
 
             tweetingService.unLikeTweet(profile,target);
             responsePackageMaker=makeStandardResponsePackageMaker();
-            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isLikingSuccessful,true);
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isUnLikingSuccessful,true);
             m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId,target.getId());
             responsePackageMaker.addResult(m);
 
@@ -245,7 +258,7 @@ public class ClientController {
                     netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.NO_SUCH_A_TWEET_ID);
         }catch (IllegalArgumentException ex){
             responsePackageMaker=makeStandardResponsePackageMaker();
-            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isLikingSuccessful,false);
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isUnLikingSuccessful,false);
             m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId,target.getId());
             responsePackageMaker.addResult(m);
 
@@ -254,6 +267,76 @@ public class ClientController {
         return responsePackageMaker;
 
     }
+
+    private ResponsePackageMaker doFollowProfileByUsername() {
+        String username=(String) inputParser.getParameterValue(netWorkingParams.RequestPackage.ParametersFields.username);
+        ResponsePackageMaker responsePackageMaker;
+        Map m=new LinkedHashMap();
+
+        try {
+
+            observerService.follow(profilesManager.getProfileByUserName(username),profile);
+            responsePackageMaker=makeStandardResponsePackageMaker();
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isFollowingSuccessful,true);
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.profileUsername,username);
+            responsePackageMaker.addResult(m);
+
+        }catch (IllegalStateException ex){
+            responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.OBSERVING_ERROR,
+                    netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.SELF_FOLLOWING);
+        }catch (IllegalArgumentException | NullPointerException ex){
+            responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.OBSERVING_ERROR,
+                    netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.USERNAME_NOT_FOUND);
+
+        }
+
+        return responsePackageMaker;
+
+    }
+
+    private ResponsePackageMaker doUnFollowProfileByUsername() {
+        String username=(String) inputParser.getParameterValue(netWorkingParams.RequestPackage.ParametersFields.username);
+        ResponsePackageMaker responsePackageMaker;
+        Map m=new LinkedHashMap();
+
+        try {
+
+            observerService.unfollow(profilesManager.getProfileByUserName(username),profile);
+            responsePackageMaker=makeStandardResponsePackageMaker();
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isUnFollowingSuccessful,true);
+            m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.profileUsername,username);
+            responsePackageMaker.addResult(m);
+
+        }catch (IllegalStateException ex){
+            responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.OBSERVING_ERROR,
+                    netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.SELF_UNFOLLOWING);
+        }catch (IllegalArgumentException | NullPointerException ex){
+            responsePackageMaker=makeErrorPackageMaker(netWorkingParams.ResponsePackage.ErrorPackage.ErrorTypes.OBSERVING_ERROR,
+                    netWorkingParams.ResponsePackage.ErrorPackage.ErrorCodes.USERNAME_NOT_FOUND);
+
+        }
+
+        return responsePackageMaker;
+
+    }
+
+    private ResponsePackageMaker doTimeLine(){
+        ArrayList<Tweet> allTweets= timeLineService.returnTimeline(profile);
+        ResponsePackageMaker responsePackage=makeStandardResponsePackageMaker();
+        Map m=new LinkedHashMap();
+        JSONArray jsonArray=new JSONArray();
+        for(Tweet t : allTweets){
+            Map map = new LinkedHashMap();
+            map.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetId,t.getId());
+//            map.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.profileUsername,p.getUsername());
+//            map.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.isTweetOwner,t_and_p.isTheWriter());
+            jsonArray.add(map);
+        }
+        m.put(netWorkingParams.ResponsePackage.StandardResponsePackage.ResultsFields.tweetIdAndProfileUsernamePairArray,jsonArray);
+        responsePackage.addResult(m);
+        return responsePackage;
+    }
+
 
     private ResponsePackageMaker getProfileByUsername() {
         String username = (String) inputParser.getParameterValue(netWorkingParams.RequestPackage.ParametersFields.username);

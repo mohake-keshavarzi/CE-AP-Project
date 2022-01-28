@@ -1,10 +1,7 @@
 package main.java.org.ce.ap.server;
 
 import main.java.org.ce.ap.netWorkingParams;
-import main.java.org.ce.ap.server.impl.AuthenticationServiceImpl;
-import main.java.org.ce.ap.server.impl.NetworkServiceImpl;
-import main.java.org.ce.ap.server.impl.ProfilesManagerImpl;
-import main.java.org.ce.ap.server.impl.TweetingServiceImpl;
+import main.java.org.ce.ap.server.impl.*;
 import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
@@ -23,19 +20,24 @@ public class ClientHandler implements Runnable{
     private ProfilesManagerImpl profilesManager;
     private AuthenticationServiceImpl authenticationService;
     private TweetingServiceImpl tweetingService;
-
+    private ObserverServiceImpl observerService;
+    private TimeLineServiceImpl timeLineService;
     /**
      * makes a new client handler
      * @param connectionSocket the socket which client will communicate with
      * @param id the id of this client
      */
-    public ClientHandler(Socket connectionSocket, String id,ProfilesManagerImpl prf,AuthenticationServiceImpl aut,TweetingServiceImpl twtS) {
+    public ClientHandler(Socket connectionSocket, String id, ProfilesManagerImpl prf,
+                         AuthenticationServiceImpl aut, TweetingServiceImpl twtS,
+                         ObserverServiceImpl obs,TimeLineServiceImpl tls) {
         this.connectionSocket = connectionSocket;
         this.clientLocalAddress=connectionSocket.getLocalAddress().toString();
         this.clientId=id;
         this.profilesManager=prf;
         this.authenticationService=aut;
         this.tweetingService=twtS;
+        this.observerService=obs;
+        this.timeLineService=tls;
         System.out.println("New client. id="+this.clientId);
     }
 
@@ -51,7 +53,7 @@ public class ClientHandler implements Runnable{
             OutputStream out = connectionSocket.getOutputStream();
             InputStream in = connectionSocket.getInputStream();
             byte[] buffer = new byte[2048];
-            ClientController clientController =new ClientController(profilesManager,authenticationService,tweetingService);
+            ClientController clientController =new ClientController(profilesManager,authenticationService,tweetingService,observerService,timeLineService);
             while (!stopFlag){
 
                 int read=in.read(buffer);

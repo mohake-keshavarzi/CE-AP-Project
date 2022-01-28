@@ -19,7 +19,7 @@ public class ObserverServiceImpl implements ObserverService {
      * if an instance of this class have been made returns that else makes a new one and returns that
      * @return current instance or newly created instance of this class
      */
-    protected static ObserverServiceImpl getInstance(){
+    public static ObserverServiceImpl getInstance(){
         if(INSTANCE==null) {
             INSTANCE = new ObserverServiceImpl(ProfilesManagerImpl.getInstance(),TweetingServiceImpl.getInstance());
         }
